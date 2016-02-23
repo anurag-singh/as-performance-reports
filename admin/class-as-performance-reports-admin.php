@@ -312,7 +312,7 @@ class As_Performance_Reports_Admin {
      */
     public function add_menu_example_list_table_page()
     {
-        add_menu_page( 'Example List Table', 'Example List Table', 'manage_options', 'example-list-table.php', array($this, 'list_table_page'), NULL , 30);
+        add_menu_page( 'All Reports', 'All Reports', 'manage_options', 'performance-reports.php', array($this, 'list_table_page'), NULL , 30);
     }
 
     /**
