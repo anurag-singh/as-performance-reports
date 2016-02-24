@@ -1,8 +1,4 @@
 <?php
-// WP_List_Table is not loaded automatically so we need to load it in our application
-    if( !class_exists( 'WP_List_Table' ) ) {
-        require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
-    }
 /**
  * The admin-specific functionality of the plugin.
  *
@@ -120,7 +116,8 @@ class As_Performance_Reports_Admin {
          * This function add a custom post type - 'job'
          */
 
-        $as_cpt = ucfirst(strtolower($this->as_cpt));
+        $as_cpt = $this->as_cpt;
+        $sanitizedCptName = str_replace(' ', '_', strtolower($this->as_cpt));
         $last_character = substr($as_cpt, -1);
         if ($last_character === 'y') {
             $plural = substr_replace($as_cpt, 'ies', -1);
@@ -130,7 +127,7 @@ class As_Performance_Reports_Admin {
         }
         $textdomain = strtolower($as_cpt);
         $cap_type = 'post';
-        $single = ucfirst(strtolower('performance_report'));
+        $single = $as_cpt;
             $opts['can_export'] = TRUE;
             $opts['capability_type'] = $cap_type;
             $opts['description'] = '';
@@ -146,7 +143,7 @@ class As_Performance_Reports_Admin {
             $opts['register_meta_box_cb'] = '';
             $opts['rewrite'] = FALSE;
             $opts['show_in_admin_bar'] = TRUE;  // 'Top Menu' bar
-            $opts['show_in_menu'] = 'edit.php?post_type=performance_excel';
+            $opts['show_in_menu'] = TRUE;
             $opts['show_in_nav_menu'] = TRUE;
             $opts['show_ui'] = TRUE;
             $opts['supports'] = array('title');
@@ -171,7 +168,7 @@ class As_Performance_Reports_Admin {
             $opts['rewrite']['pages'] = TRUE;
             $opts['rewrite']['slug'] = __( strtolower( $single ), $textdomain );
             $opts['rewrite']['with_front'] = FALSE;
-        register_post_type( $single, $opts );
+        register_post_type( $sanitizedCptName, $opts );
     }
 
     /**
@@ -251,12 +248,13 @@ class As_Performance_Reports_Admin {
          * Create a new custom taxonomy 'job-cat'
          */
 
-        $post_type = $this->as_cpt;
+        $post_type = str_replace(' ', '_', strtolower($this->as_cpt));
         $taxonomies = $this->as_taxo;
         $textdomain = strtolower($this->as_cpt);
 
         foreach ($taxonomies as $taxo) {
-            $taxo = ucwords(strtolower(preg_replace('/\s+/', ' ', $taxo) ));
+            $sanitizedTaxoName = str_replace(' ', '_', strtolower($taxo));
+            $taxo = ucfirst(strtolower($taxo));
             $last_character = substr($taxo, -1);
                 if ($last_character === 'y') {
                     $plural = substr_replace($taxo, 'ies', -1);
@@ -322,12 +320,12 @@ class As_Performance_Reports_Admin {
      */
     public function list_table_page()
     {
-        $exampleListTable = new Example_List_Table();
+        $exampleListTable = new Report_List_Table();
         $exampleListTable->prepare_items();
         ?>
             <div class="wrap">
                 <div id="icon-users" class="icon32"></div>
-                <h2>Example List Table Page</h2>
+                <h2>Performance Report</h2>
                 <?php $exampleListTable->display(); ?>
             </div>
         <?php

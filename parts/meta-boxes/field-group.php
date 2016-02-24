@@ -1,7 +1,7 @@
 <?php
 /*
 Title: Field Groups
-Post Type: performance_report
+Post Type: performance
 Order: 80
 */
 

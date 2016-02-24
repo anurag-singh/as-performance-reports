@@ -90,8 +90,8 @@ class As_Performance_Reports {
         $this->plugin_name = 'as-performance-reports';
         $this->version = '1.0.0';
 
-        $this->as_cpt = 'report';
-        $this->as_taxo = array('category');
+        $this->as_cpt = 'Performance Excel';
+        $this->as_taxo = array('report category');
 
         $this->load_dependencies();
         $this->set_locale();
@@ -159,6 +159,11 @@ class As_Performance_Reports {
          */
         require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class_excel_to_mysql.php';
 
+        /**
+         * The class responsible for defining all actions that are used to import excel data into mysql
+         */
+        require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class_admin_report_table.php';
+
         $this->loader = new As_Performance_Reports_Loader();
 
     }
@@ -193,8 +198,8 @@ class As_Performance_Reports {
 
         $this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
         $this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-        //$this->loader->add_action( 'init', $plugin_admin, 'create_new_cpt');
-        $this->loader->add_action ( 'init', $plugin_admin, 'create_second_cpt');
+        $this->loader->add_action( 'init', $plugin_admin, 'create_new_cpt');
+        //$this->loader->add_action ( 'init', $plugin_admin, 'create_second_cpt');
         $this->loader->add_action ( 'init', $plugin_admin, 'create_new_taxonomy');
 
         $this->loader->add_action ('admin_menu', $plugin_admin, 'add_menu_example_list_table_page');
