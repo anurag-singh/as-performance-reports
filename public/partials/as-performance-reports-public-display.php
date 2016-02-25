@@ -1,46 +1,28 @@
 <?php
 
-/**
- * Provide a public-facing view for the plugin
- *
- * This file is used to markup the public-facing aspects of the plugin.
- *
- * @link       https://www.facebook.com/anuragsingh.me
- * @since      1.0.0
- *
- * @package    As_Performance_Reports
- * @subpackage As_Performance_Reports/public/partials
- */
+$reportFrontEnd = new Last_Month_Report();
+
+$tradingCalls = $reportFrontEnd->get_array_of_call_type();
+
+// echo '<pre>';
+// print_r($tradingCalls);
+// echo '<pre>';
+
+// foreach ($tradingCalls as $call) {
+// 	print_r($call);
+// }
+
+$countTradingcalls = $reportFrontEnd->get_total_calls($tradingCalls, 'Trading');
+
+//print_r($countTradingcalls);
+
+$countPositionalcalls = $reportFrontEnd->get_total_calls($tradingCalls, 'Positional');
+
+echo $reportFrontEnd->timePeriod($tradingCalls);
+
+echo $reportFrontEnd->noOfUnits($tradingCalls);
+
+echo $reportFrontEnd->plPerUnit($tradingCalls);
+
+
 ?>
-
-<!-- This file should primarily consist of HTML with a little bit of PHP. -->
-
-
-<table>
-    <tr>
-        <td>
-        5
-        </td>
-        <td>
-        5
-        </td>
-        <td>
-        5
-        </td>
-        <td>
-        5
-        </td>
-        <td>
-        5
-        </td>
-        <td>
-        5
-        </td>
-        <td>
-        5
-        </td>
-        <td>
-        5
-        </td>
-    </tr>
-</table>
