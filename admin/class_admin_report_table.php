@@ -92,7 +92,7 @@ if( !class_exists( 'WP_List_Table' ) ) {
         private function table_data()
         {
             global $wpdb;
-            $table = $wpdb->prefix . "report_performance";
+            $table = $wpdb->prefix . "performance_report";
             $dbColumns = $this->dbColumns;
             $columns = implode(', ', $dbColumns);
             $selectDbRecords = "SELECT $columns

@@ -10,35 +10,14 @@ date_default_timezone_set('Asia/Dili');
 
 class Excel2Mysql extends Custom_Filter_For_Excel
 {
-    public $conn;
+    //public $conn;
     private $excelSheetDataArray;
     private $dbColumns = array('stockID', 'stockName', 'action', 'entryDate', 'entryPrice', 'targetPrice', 'stopLoss', 'exitDate', 'exitPrice');
-    private $postType = 'performance_report';
+    //private $postType = 'performance_report';
     private $table;
 
     function __construct() {
-        global $wpdb;
-        $table = $wpdb->prefix . "report_performance";
-        $charset_collate = $wpdb->get_charset_collate();
-        $createTable = "CREATE TABLE IF NOT EXISTS $table (
-                ID INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-                stockID VARCHAR(12) NOT NULL,
-                stockName VARCHAR(50) NOT NULL,
-                action VARCHAR(12) NOT NULL,
-                entryDate VARCHAR(12) NOT NULL,
-                exitDate VARCHAR(12) NOT NULL,
-                entryPrice VARCHAR(12) NOT NULL,
-                exitPrice VARCHAR(12) NOT NULL,
-                targetPrice VARCHAR(12) NOT NULL,
-                stopLoss VARCHAR(12) NOT NULL,
-                callStartDate TIMESTAMP
-            )$charset_collate;";
-
-        // Check if database is created
-        if($wpdb->query($createTable) === FALSE)
-        {
-            echo $wpdb->print_error();
-        }
+        
     }
 
     public function fetch_records_from_excel($sheetname, $inputFileName)
@@ -88,7 +67,7 @@ class Excel2Mysql extends Custom_Filter_For_Excel
     public function fetch_records_from_db()
     {
         global $wpdb;
-        $table = $wpdb->prefix . "report_performance";
+        $table = $wpdb->prefix . "performance_report";
         $dbColumns = $this->dbColumns;
         $columns = implode(', ', $dbColumns);
         $selectDbRecords = "SELECT $columns
@@ -105,10 +84,10 @@ class Excel2Mysql extends Custom_Filter_For_Excel
             if(!empty($getAllRecordsFromDB)) {
                 return $getAllRecordsFromDB;
             }
-            else
-            {
-                echo "<br>Database is empty.";
-            }
+            // else
+            // {
+            //     echo "<br>Database is empty.";
+            // }
 
         }
 
@@ -118,7 +97,8 @@ class Excel2Mysql extends Custom_Filter_For_Excel
     public function get_duplicate_records_from_db($sheetData)
     {
         global $wpdb;
-        $table = $wpdb->prefix . "report_performance";
+        $newRecordsCouter = 0;
+        $table = $wpdb->prefix . "performance_report";
         $dbColumns = $this->dbColumns;
 
         $colNames = implode(', ', $dbColumns);
@@ -178,23 +158,25 @@ class Excel2Mysql extends Custom_Filter_For_Excel
 
                         $colVals = implode(' ,' , array_values($excelrow));
 
-                        $result = $wpdb->insert($table, $excelrow, array('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' )  );
+                        $insertNewRecord = $wpdb->insert($table, $excelrow, array('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' )  );
 
-
-                            if (isset($result))
+                            
+                            if (isset($insertNewRecord))
                             {
-                                echo "record inserted";
+                                $newRecordsCouter++;
                             }
                             else {
-                                echo "NO new records";
+                                echo "No new records found.";
                                 echo $wpdb->print_error();
                                 //echo '<br><b style =color:#f00;>Error - </b>' . $conn->error;
                             }
-
                     }
 
                 }
 
+        }
+        if($newRecordsCouter>0){
+            echo '<b>'.$newRecordsCouter. ' new records inserted.</b>';
         }
 
         }
