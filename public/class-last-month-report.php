@@ -49,63 +49,25 @@ class Last_Month_Report {
 	   return $counter;
 	}
 
-	public function date_diffence($entryDate, $exitDate) {
-		
-     $datediff = $entryDate - $exitDate;
-     return floor($datediff/(60*60*24));
-
-	}
 
 	public function timePeriod($tradingCalls) {
 		foreach ($tradingCalls as $call) {
 
-			//print_r($call);
+			echo "<pre>";
+			print_r($call);
+			echo "</pre>";
 
-			echo $entryDate = strtotime($call['entryDate']);
-			echo ' : ';
-			echo $exitDate = strtotime($call['exitDate']);
-			echo '<br>';
+			$entryDate = strtotime($call['entryDate']);
+			$exitDate = strtotime($call['exitDate']);
 
-			$datediff = $entryDate - $exitDate;
-     		
-     		echo (floor($datediff/(60*60*24)));
+			$datediff = $exitDate - $entryDate;
+
+     		return (floor($datediff/(60*60*24)));
 
 		}
 	}
 
-	public function atimePeriod($start, $end)
-	{
-		   $start_ts = strtotime($start);
-			  $end_ts = strtotime($end);
-			  $diff = $end_ts - $start_ts;
-			  return round($diff / 86400);
-		}
 
-
-	public function __timePeriod($callsdetails) {
-		foreach ($callsdetails as $singlecall) {
-			// echo $entryDate = $singlecall['entryDate'];
-			// echo " :	 ";
-			// echo $exitDate = $singlecall['exitDate'];
-			// echo " | ";
-
-			$entryDate = new DateTime($singlecall['entryDate']);
-			$exitDate = new DateTime($singlecall['exitDate']);
-
-			$entryDate = date_format($entryDate, 'Y-m-d');
-			$exitDate = date_format($exitDate, 'Y-m-d');
-
-			echo $entryDate. '|' . $exitDate . '<br>';
-
-
-			
-
-
-			
-	echo  date_diff($exitDate, $entryDate);
-		}
-		
-	}
 
 
 }
