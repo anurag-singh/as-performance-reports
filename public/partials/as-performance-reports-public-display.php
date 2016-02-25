@@ -15,31 +15,32 @@
 
 <!-- This file should primarily consist of HTML with a little bit of PHP. -->
 
+
 <table>
-	<tr>
-		<td>
-		5
-		</td>
-		<td>
-		5
-		</td>
-		<td>
-		5
-		</td>
-		<td>
-		5
-		</td>
-		<td>
-		5
-		</td>
-		<td>
-		5
-		</td>
-		<td>
-		5
-		</td>
-		<td>
-		5
-		</td>
-	</tr>
+    <tr>
+        <td>
+        5
+        </td>
+        <td>
+        5
+        </td>
+        <td>
+        5
+        </td>
+        <td>
+        5
+        </td>
+        <td>
+        5
+        </td>
+        <td>
+        5
+        </td>
+        <td>
+        5
+        </td>
+        <td>
+        5
+        </td>
+    </tr>
 </table>

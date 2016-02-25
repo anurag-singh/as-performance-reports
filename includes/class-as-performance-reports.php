@@ -164,6 +164,14 @@ class As_Performance_Reports {
          */
         require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class_admin_report_table.php';
 
+        /**
+         * The class responsible for defining all actions that are used to display last month report
+         */
+        require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-last-month-report.php';
+
+
+
+
         $this->loader = new As_Performance_Reports_Loader();
 
     }
@@ -217,8 +225,10 @@ class As_Performance_Reports {
 
         $plugin_public = new As_Performance_Reports_Public( $this->get_plugin_name(), $this->get_version() );
 
-        $this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
-        $this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
+        //$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
+        //$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
+
+        //$last_month_report = new Last_Month_Report();
 
     }
 

@@ -30,11 +30,12 @@ class As_Performance_Reports_Activator {
      * @since    1.0.0
      */
     public static function activate() {
-    	global $wpdb;
+        global $wpdb;
         $table = $wpdb->prefix . "performance_report";
         $charset_collate = $wpdb->get_charset_collate();
         $createTable = "CREATE TABLE IF NOT EXISTS $table (
                 ID INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                stockCat VARCHAR(25) NOT NULL,
                 stockID VARCHAR(25) NOT NULL,
                 stockName VARCHAR(50) NOT NULL,
                 action VARCHAR(12) NOT NULL,

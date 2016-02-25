@@ -12,12 +12,12 @@ class Excel2Mysql extends Custom_Filter_For_Excel
 {
     //public $conn;
     private $excelSheetDataArray;
-    private $dbColumns = array('stockID', 'stockName', 'action', 'entryDate', 'entryPrice', 'targetPrice', 'stopLoss', 'exitDate', 'exitPrice');
+    private $dbColumns = array('stockCat', 'stockID', 'stockName', 'action', 'entryDate', 'entryPrice', 'targetPrice', 'stopLoss', 'exitDate', 'exitPrice');
     //private $postType = 'performance_report';
     private $table;
 
     function __construct() {
-        
+
     }
 
     public function fetch_records_from_excel($sheetname, $inputFileName)
@@ -27,7 +27,7 @@ class Excel2Mysql extends Custom_Filter_For_Excel
 
 
         /**  Create an Instance of our Read Filter, passing in the cell range  **/
-        $filterSubset = new Custom_Filter_For_Excel(2,50,range('A','I'));
+        $filterSubset = new Custom_Filter_For_Excel(2,50,range('A','J'));
 
         $objReader = PHPExcel_IOFactory::createReader($inputFileType);
         $objReader->setLoadSheetsOnly($sheetname);
@@ -156,11 +156,13 @@ class Excel2Mysql extends Custom_Filter_For_Excel
                     else
                     {
 
-                        $colVals = implode(' ,' , array_values($excelrow));
+                        //$colVals = implode(' ,' , array_values($excelrow));
 
-                        $insertNewRecord = $wpdb->insert($table, $excelrow, array('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' )  );
 
-                            
+
+                        $insertNewRecord = $wpdb->insert($table, $excelrow, array('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' )  );
+
+
                             if (isset($insertNewRecord))
                             {
                                 $newRecordsCouter++;
