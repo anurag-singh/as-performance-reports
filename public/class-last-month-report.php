@@ -68,6 +68,31 @@ class Last_Month_Report {
 	}
 
 
+	public function noOfUnits($tradingCalls) {
+		foreach ($tradingCalls as $call) {
+			$entryPrice = $call['entryPrice'];
+
+			return floor(100000/$entryPrice);
+
+		}
+	}
+
+	public function plPerUnit($tradingCalls) {
+		foreach ($tradingCalls as $call) {
+			$action = $call['action'];
+			$entryPrice = $call['entryPrice'];
+			$exitPrice = $call['exitPrice'];
+
+			if($action == 'BUY') {
+				return $entryPrice-$exitPrice;
+			}
+			else {
+				return $exitPrice - $entryPrice;
+			}
+		}
+	}
+
+
 
 
 }
