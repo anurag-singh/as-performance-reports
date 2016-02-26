@@ -18,11 +18,11 @@ $countTradingcalls = $reportFrontEnd->get_total_calls($tradingCalls, 'Trading');
 
 $countPositionalcalls = $reportFrontEnd->get_total_calls($tradingCalls, 'Positional');
 
-echo $reportFrontEnd->timePeriod($tradingCalls);
+echo 'timePeriod ->' . $reportFrontEnd->timePeriod($tradingCalls) . '<br>';
 
-echo $reportFrontEnd->noOfUnits($tradingCalls);
+echo 'noOfUnits ->' .$reportFrontEnd->noOfUnits($tradingCalls). '<br>';
 
-echo $reportFrontEnd->plPerUnit($tradingCalls);
+echo 'plPerUnit ->' $reportFrontEnd->plPerUnit($tradingCalls). '<br>' ;
 
 
 ?>
