@@ -13,6 +13,13 @@
 // WHERE   stockID  LIKE '".$colNameLike."%'
 
 class Last_Month_Report {
+	var $totatROI;
+	var $netProfitLoss;
+	var $totalInvestment;
+	var $totalAverageTimePeriod;
+	var $totalHits;
+	var $totalMisses;
+	var $totalPendings;
 
     public function get_all_calls() {
     	global $wpdb;
@@ -38,7 +45,7 @@ class Last_Month_Report {
     }
 
     private function noOfUnits($entryPrice) {
-			return floor(100000/$entryPrice);			
+		return floor(100000/$entryPrice);			
 	}
 
 	private function plPerUnit($action, $entryPrice, $exitPrice) {	
@@ -67,10 +74,10 @@ class Last_Month_Report {
 		}
 	}
 	
-	private function number_format_drop_zero_decimals($n, $n_decimals)
-    {
-        return ((floor($n) == round($n, $n_decimals)) ? number_format($n) : number_format($n, $n_decimals));
-    }
+	// private function number_format_drop_zero_decimals($n, $n_decimals)
+ //    {
+ //        return ((floor($n) == round($n, $n_decimals)) ? number_format($n) : number_format($n, $n_decimals));
+ //    }
 
 	private function finalResult($grossROI) {
 		if($grossROI<=0){
@@ -85,46 +92,54 @@ class Last_Month_Report {
 		return $entryPrice * $noOfUnits;
 	}
 
-	// private function perCallProfitLoss() {
-
-	// }
+	private function perCallProfitLoss($plPerLac) {
+		return $plPerLac;
+	}
 
 	private function perCallROIonInvestment($plPerLac, $perCallInvestment) {
 		$roi = $plPerLac / $perCallInvestment;
-		return number_format($roi, 4, '.', '');
+		return number_format((float)$roi, 4, '.', '');	
 	}
 
-	private function totalInvestment($entryPrice, $noOfUnits) {
-		return round($entryPrice * $noOfUnits);
+	private function totalInvestment($perCallInvestment) {
+		return round($this->totalInvestment += $perCallInvestment);
 	}
 
 	private function netProfitLoss($plPerLac) {
-		return round($plPerLac += $plPerLac);
+		return $this->netProfitLoss += $plPerLac;
 	}
 
-	private function roiOnInvestment() {
-		return "not defined yet";
+	private function roiOnInvestment($netProfitLoss, $totalInvestment) {
+		$roiOnInvestment = $netProfitLoss / $totalInvestment;
+		return number_format($roiOnInvestment, 4 , '.', '');
 	}
 
-	private function totalAverageTimePeriod() {
-		return "not defined yet";
+	private function totalAverageTimePeriod($timePeriod, $totalCalls) {
+		$totalTimePeriod = $this->totalAverageTimePeriod += $timePeriod; 
+		if($totalCalls>0) {
+			$average = $totalTimePeriod / $totalCalls;
+			return number_format($average, 4, '.', ' %');
+		}
 	}
 	
-	private function annualisedROI() {
-		return "not defined yet";
+	private function annualisedROI($netProfitLoss, $totalInvestment, $totalAverageTimePeriod) {
+		$secondNo =   $totalInvestment * $totalAverageTimePeriod / 365;
+		$annualisedROI = $netProfitLoss / $secondNo;
+		return number_format((float)$annualisedROI, 4, '.', '');
 	}
 
-	private function success($totalCalls, $totalHit) {
-		if($totalHit<0){
-			$successRate = ($totalCalls /  $totalHit) * 100;
+	private function successPercentage($totalCalls, $totalHits) {
+		if($totalHits>0){
+			$successRate = ($totalCalls /  $totalHits) * 100;
 			return number_format($successRate, 1, '.', ''). ' %';
 		}
 	}
 
+	
+
 
 
     public function detail_about_calls($category) {
-		$totalCalls = $totalHit = $totalMiss = $totalPending = $i = 0;
     	$allCalls = $this->get_all_calls();
     	
     	foreach ($allCalls as $singleCall) {
@@ -162,77 +177,67 @@ class Last_Month_Report {
 				// Final result
 				$finalResult = $this->finalResult($grossROI);  
 
-				// Total Investment
+				// Per call Investment
 				$perCallInvestment = $this->perCallInvestment($entryPrice, $noOfUnits);
 
-				// Net Profit or Loss
-				//$perCallProfitLoss = $this->perCallProfitLoss($plPerLac);
+				// Per call Profit
+				$perCallProfitLoss = $this->perCallProfitLoss($plPerLac);
 
 				// Per call ROI on Investment
 				$perCallROIonInvestment = $this->perCallROIonInvestment($perCallProfitLoss, $perCallInvestment);
-		
+
+				// Total investment
+				$totalInvestment = $this->totalInvestment($perCallInvestment);
+
+				// Net Profit or Loss
+				$netProfitLoss = $this->netProfitLoss($plPerLac);
 
 				// ROI on Investment
-				$roiOnInvestment = $this->roiOnInvestment();
+				$roiOnInvestment = $this->roiOnInvestment($netProfitLoss, $totalInvestment);
 
 				// Total Average Time Period
-				$totalAverageTimePeriod = $this->totalAverageTimePeriod();
+				$totalAverageTimePeriod = $this->totalAverageTimePeriod($timePeriod, $totalCalls);
 
 				// Annualised ROI
-				$annualisedROI = $this->annualisedROI();
-
-
+				$annualisedROI = $this->annualisedROI($netProfitLoss, $totalInvestment, $totalAverageTimePeriod);
 				
 				if($finalResult == 'HIT') {
-					 $totalHit++;
+					 $totalHits++;
 				}
 				elseif ($finalResult == 'MISS') {
-					$totalMiss++;
+					$totalMisses++;
 				}
 				else{
-					$totalPending++;
+					$totalPendings++;
 				}
 
-				// $calls['totalHits'] = $totalHit;
-				// $calls['totalMiss'] = $totalMiss;
-				// $calls['totalPending'] = $totalPending;
-
-
-
-
-				
-
+				$success = $this->successPercentage($totalCalls, $totalHits);
     		}
 
-			$calls[$i] = 	[
-							'Action'				=> 	$action,
-							'Entry Price'			=> 	$entryPrice,
-							'Exit Price'			=> 	$exitPrice,
-    						'Total Calls' 			=>	$totalCalls,
-    						'Time Period' 			=>	$timePeriod,
-    						'No Of Units' 			=>	$noOfUnits,
-    						'PL Per Unit' 			=>	$plPerUnit,
-    						'PL Per Lac' 			=>	$plPerLac,
-    						'Gross ROI' 			=>	$grossROI . ' %',
-    						'Final Result' 			=>	$finalResult,
-    						'Per Call Investment' 	=>	$perCallInvestment,
-    						'Per Call Profit/Loss' 	=>	$plPerLac,
-    						'Per Call ROI On Investment'=>	$perCallROIonInvestment,
-    						'Total Investment' 		=>	$totalInvestment,
-    						'Net Profit/Loss' 	=>	$netProfitLoss,
-    						'ROI On Investment'		=>	$roiOnInvestment,
-    						'Total Average Time Period'=>	$totalAverageTimePeriod,
-    						'Annualised ROI'		=> $annualisedROI,
-    						'Success'				=> 	$success,
-    						'Total Hits'			=>	$totalHits,
-    						'Total Misses'			=>	$totalMisses,
-    						'Total Pendings'		=> 	$totalPendings
+			$calls[] = 	[
+							'action'				=> 	$action,
+							'entryPrice'			=> 	$entryPrice,
+							'exitPrice'				=> 	$exitPrice,
+    						'totalCalls' 			=>	$totalCalls,
+    						'timePeriod' 			=>	$timePeriod,
+    						'noOfUnits' 			=>	$noOfUnits,
+    						'plPerUnit' 			=>	$plPerUnit,
+    						'plPerLac' 				=>	$plPerLac,
+    						'grossROI' 				=>	$grossROI . ' %',
+    						'finalResult' 			=>	$finalResult,
+    						'perCallInvestment' 	=>	$perCallInvestment,
+    						'perCallProfitLoss' 	=>	$perCallProfitLoss,
+    						'perCallROIonInvestment'=>	$perCallROIonInvestment,
+    						'totalInvestment' 		=>	$totalInvestment,
+    						'netProfitLoss' 		=>	$netProfitLoss,
+    						'roiOnInvestment'		=>	$roiOnInvestment,
+    						'totalAverageTimePeriod'=>	$totalAverageTimePeriod,
+    						'annualisedROI'			=> $annualisedROI,
+    						'success'				=> 	$success,
+    						'totalHits'				=>	$totalHits,
+    						'totalMisses'			=>	$totalMisses,
+    						'totalPendings'			=> 	$totalPendings
     					];
-
-		    	// Success percentage
-				$success = $this->success($totalCalls, $totalHits );	
-    		
-    		$i++;
     	}
     	return $calls;
     	
