@@ -169,6 +169,11 @@ class As_Performance_Reports {
          */
         require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-last-month-report.php';
 
+		/**
+         * The class responsible for defining all actions that are used to display all records of perticualr call type
+         */
+        require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-single-call-type.php';
+
 
 
 

@@ -21,6 +21,8 @@ class Last_Month_Report {
 	var $totalMisses;
 	var $totalPendings;
 
+	
+
     public function get_all_calls() {
     	global $wpdb;
         $today = date('Y-m-d');
@@ -45,16 +47,16 @@ class Last_Month_Report {
     }
 
     private function noOfUnits($entryPrice) {
-		return floor(100000/$entryPrice);			
+		return floor(100000/$entryPrice);
 	}
 
-	private function plPerUnit($action, $entryPrice, $exitPrice) {	
+	private function plPerUnit($action, $entryPrice, $exitPrice) {
 			if($action == 'BUY') {
 				return $exitPrice - $entryPrice;
 			}
 			else {
 				return $entryPrice - $exitPrice;
-			}		
+			}
 	}
 
 	private function plPerLac($plPerUnit, $noOfUnits) {
@@ -73,7 +75,7 @@ class Last_Month_Report {
 			return 0;
 		}
 	}
-	
+
 	// private function number_format_drop_zero_decimals($n, $n_decimals)
  //    {
  //        return ((floor($n) == round($n, $n_decimals)) ? number_format($n) : number_format($n, $n_decimals));
@@ -83,8 +85,11 @@ class Last_Month_Report {
 		if($grossROI<=0){
 			return 'MISS';
 		}
-		else {
+		elseif ($grossROI>0){
 			return 'HIT';
+		}
+		else {
+			return 'Pending';
 		}
 	}
 
@@ -98,7 +103,7 @@ class Last_Month_Report {
 
 	private function perCallROIonInvestment($plPerLac, $perCallInvestment) {
 		$roi = $plPerLac / $perCallInvestment;
-		return number_format((float)$roi, 4, '.', '');	
+		return number_format((float)$roi, 4, '.', '');
 	}
 
 	private function totalInvestment($perCallInvestment) {
@@ -115,13 +120,13 @@ class Last_Month_Report {
 	}
 
 	private function totalAverageTimePeriod($timePeriod, $totalCalls) {
-		$totalTimePeriod = $this->totalAverageTimePeriod += $timePeriod; 
+		$totalTimePeriod = $this->totalAverageTimePeriod += $timePeriod;
 		if($totalCalls>0) {
 			$average = $totalTimePeriod / $totalCalls;
 			return number_format($average, 4, '.', ' %');
 		}
 	}
-	
+
 	private function annualisedROI($netProfitLoss, $totalInvestment, $totalAverageTimePeriod) {
 		$secondNo =   $totalInvestment * $totalAverageTimePeriod / 365;
 		$annualisedROI = $netProfitLoss / $secondNo;
@@ -135,13 +140,11 @@ class Last_Month_Report {
 		}
 	}
 
-	
-
 
 
     public function detail_about_calls($category) {
     	$allCalls = $this->get_all_calls();
-    	
+
     	foreach ($allCalls as $singleCall) {
 
     		$stockCat = $singleCall['stockCat'];
@@ -152,13 +155,13 @@ class Last_Month_Report {
     		$action = $singleCall['action'];
 
 
-    		
+
 
 
     		// For total calls of category given
     		if($stockCat == $category) {
     			$totalCalls++;
-    			
+
 				//  For time period of each call
 				$timePeriod = $this->timePeriod($entryDate, $exitDate);
 
@@ -175,7 +178,7 @@ class Last_Month_Report {
 				$grossROI = $this->grossROI($plPerLac, $noOfUnits, $entryPrice);
 
 				// Final result
-				$finalResult = $this->finalResult($grossROI);  
+				$finalResult = $this->finalResult($grossROI);
 
 				// Per call Investment
 				$perCallInvestment = $this->perCallInvestment($entryPrice, $noOfUnits);
@@ -200,7 +203,7 @@ class Last_Month_Report {
 
 				// Annualised ROI
 				$annualisedROI = $this->annualisedROI($netProfitLoss, $totalInvestment, $totalAverageTimePeriod);
-				
+
 				if($finalResult == 'HIT') {
 					 $totalHits++;
 				}
@@ -208,8 +211,12 @@ class Last_Month_Report {
 					$totalMisses++;
 				}
 				else{
+					if($totalPendings<=0){
+						return $totalPendings = 0;
+					}
 					$totalPendings++;
 				}
+
 
 				$success = $this->successPercentage($totalCalls, $totalHits);
     		}
@@ -240,11 +247,11 @@ class Last_Month_Report {
     					];
     	}
     	return $calls;
-    	
+
     }
 
 
-    
+
 
 
 
