@@ -36,9 +36,11 @@ class Single_Call_Type {
     }
     
 
-	private function prepare_data_to_display($allCalls){		
+	private function prepare_data_to_display($allCalls){	
+		$totalCallsgiven = 0;
 
 		foreach ($allCalls as $singlecall) {
+			$totalCallsgiven ++;
 
 			/*	Get all values from DB */
 			$action 	= $singlecall['action'];
@@ -51,16 +53,14 @@ class Single_Call_Type {
 			$plPerLac 	= $this->plPerLac($plPerUnit, $noOfUnits);
 			$grossROI 	= $this->grossROI($plPerLac, $noOfUnits, $entryPrice). '%';
 			$finalResult= $this->finalResult($grossROI);
-
-
-
-
+			
 			// Prepare a array to store the additional columns
 			$extraColumns = [
-						'plPerunit' =>	$plPerUnit,
-						'plPerLac'	=> 	$plPerLac,
-						'grossROI'	=>	$grossROI,
-						'finalResult'	=>	$finalResult
+						'plPerunit' 	=>	$plPerUnit,
+						'plPerLac'		=> 	$plPerLac,
+						'grossROI'		=>	$grossROI,
+						'finalResult'	=>	$finalResult,
+						
 
 					];
 
@@ -83,8 +83,17 @@ class Single_Call_Type {
 		    echo '<td>' .$singlecall['plPerLac']. '</td>';
 		    echo '<td>' .$singlecall['grossROI']. '</td>';
 		    echo '<td>' .$singlecall['finalResult']. '</td>';
+		    echo '<td>' .$singlecall['callsGiven']. '</td>';
 		    echo '</tr>';
 		} 
+
+		$summarised['callsGiven']	= $totalCallsgiven;
+		
+		echo '<pre>'; 
+			print_r($summarised);
+		echo '</pre>'; 
+
+		
 	}
 
 
@@ -134,11 +143,13 @@ class Single_Call_Type {
 		}
 	}
 
-	public function summarised_snapshot($allCalls) {
-		global $allCalls;
-		$allCalls = $this->allCalls;
+	public function summarised_snapshot($callType) {
+		$allCalls = $this->get_all_calls_from_specific_category($callType);
 
-		var_dump($allCalls);
+		$summarisedSnapshot['callGiven'] = count($allCalls);
+		//var_dump($summarisedSnapshot);
+
+		return $summarisedSnapshot;
 	}
 
 	

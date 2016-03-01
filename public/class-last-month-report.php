@@ -20,7 +20,10 @@ class Last_Month_Report {
 	var $totalHits;
 	var $totalMisses;
 	var $totalPendings;
+	var $singleCallType;
 
+
+	var $allRsearchCalls = ['Trading', 'Positional'];		// Define all research calls in array
 	
 
     public function get_all_calls() {
@@ -77,9 +80,9 @@ class Last_Month_Report {
 	}
 
 	// private function number_format_drop_zero_decimals($n, $n_decimals)
- //    {
- //        return ((floor($n) == round($n, $n_decimals)) ? number_format($n) : number_format($n, $n_decimals));
- //    }
+	 //    {
+	 //        return ((floor($n) == round($n, $n_decimals)) ? number_format($n) : number_format($n, $n_decimals));
+	 //    }
 
 	private function finalResult($grossROI) {
 		if($grossROI<=0){
@@ -119,10 +122,10 @@ class Last_Month_Report {
 		return number_format($roiOnInvestment, 4 , '.', '');
 	}
 
-	private function totalAverageTimePeriod($timePeriod, $totalCalls) {
+	private function totalAverageTimePeriod($timePeriod, $totalCallsgiven) {
 		$totalTimePeriod = $this->totalAverageTimePeriod += $timePeriod;
-		if($totalCalls>0) {
-			$average = $totalTimePeriod / $totalCalls;
+		if($totalCallsgiven>0) {
+			$average = $totalTimePeriod / $totalCallsgiven;
 			return number_format($average, 4, '.', ' %');
 		}
 	}
@@ -133,9 +136,9 @@ class Last_Month_Report {
 		return number_format((float)$annualisedROI, 4, '.', '');
 	}
 
-	private function successPercentage($totalCalls, $totalHits) {
+	private function successPercentage($totalCallsgiven, $totalHits) {
 		if($totalHits>0){
-			$successRate = ($totalCalls /  $totalHits) * 100;
+			$successRate = ($totalCallsgiven /  $totalHits) * 100;
 			return number_format($successRate, 1, '.', ''). ' %';
 		}
 	}
@@ -143,16 +146,17 @@ class Last_Month_Report {
 
 
     public function detail_about_calls($category) {
+    	$totalCallsgiven = 0;
     	$allCalls = $this->get_all_calls();
 
     	foreach ($allCalls as $singleCall) {
 
-    		$stockCat = $singleCall['stockCat'];
+    		$stockCat 	= $singleCall['stockCat'];
     		$entryPrice = $singleCall['entryPrice'];
-    		$exitPrice = $singleCall['exitPrice'];
-    		$entryDate = $singleCall['entryDate'];
-    		$exitDate = $singleCall['exitDate'];
-    		$action = $singleCall['action'];
+    		$exitPrice 	= $singleCall['exitPrice'];
+    		$entryDate 	= $singleCall['entryDate'];
+    		$exitDate 	= $singleCall['exitDate'];
+    		$action 	= $singleCall['action'];
 
 
 
@@ -160,7 +164,7 @@ class Last_Month_Report {
 
     		// For total calls of category given
     		if($stockCat == $category) {
-    			$totalCalls++;
+    			$totalCallsgiven ++;
 
 				//  For time period of each call
 				$timePeriod = $this->timePeriod($entryDate, $exitDate);
@@ -199,7 +203,7 @@ class Last_Month_Report {
 				$roiOnInvestment = $this->roiOnInvestment($netProfitLoss, $totalInvestment);
 
 				// Total Average Time Period
-				$totalAverageTimePeriod = $this->totalAverageTimePeriod($timePeriod, $totalCalls);
+				$totalAverageTimePeriod = $this->totalAverageTimePeriod($timePeriod, $totalCallsgiven);
 
 				// Annualised ROI
 				$annualisedROI = $this->annualisedROI($netProfitLoss, $totalInvestment, $totalAverageTimePeriod);
@@ -218,14 +222,14 @@ class Last_Month_Report {
 				}
 
 
-				$success = $this->successPercentage($totalCalls, $totalHits);
+				$success = $this->successPercentage($totalCallsgiven, $totalHits);
     		}
 
-			$calls[] = 	[
+			$allCalltypes[] = 	[
 							'action'				=> 	$action,
 							'entryPrice'			=> 	$entryPrice,
 							'exitPrice'				=> 	$exitPrice,
-    						'totalCalls' 			=>	$totalCalls,
+    						'totalCalls' 			=>	$totalCallsgiven,
     						'timePeriod' 			=>	$timePeriod,
     						'noOfUnits' 			=>	$noOfUnits,
     						'plPerUnit' 			=>	$plPerUnit,
@@ -235,20 +239,84 @@ class Last_Month_Report {
     						'perCallInvestment' 	=>	$perCallInvestment,
     						'perCallProfitLoss' 	=>	$perCallProfitLoss,
     						'perCallROIonInvestment'=>	$perCallROIonInvestment,
-    						'totalInvestment' 		=>	$totalInvestment,
-    						'netProfitLoss' 		=>	$netProfitLoss,
-    						'roiOnInvestment'		=>	$roiOnInvestment,
-    						'totalAverageTimePeriod'=>	$totalAverageTimePeriod,
-    						'annualisedROI'			=> $annualisedROI,
-    						'success'				=> 	$success,
-    						'totalHits'				=>	$totalHits,
-    						'totalMisses'			=>	$totalMisses,
-    						'totalPendings'			=> 	$totalPendings
+    						// 'totalInvestment' 		=>	$totalInvestment,
+    						// 'netProfitLoss' 		=>	$netProfitLoss,
+    						// 'roiOnInvestment'		=>	$roiOnInvestment,
+    						// 'totalAverageTimePeriod'=>	$totalAverageTimePeriod,
+    						// 'annualisedROI'			=> $annualisedROI,
+    						// 'success'				=> 	$success,
+    						// 'totalHits'				=>	$totalHits,
+    						// 'totalMisses'			=>	$totalMisses,
+    						// 'totalPendings'			=> 	$totalPendings
     					];
     	}
-    	return $calls;
+
+    	$singleCallTypes	= 	[
+    								'callsGiven' 			=>	$totalCallsgiven,
+    								'totalHits'				=>	$totalHits,
+		    						'totalMisses'			=>	$totalMisses,
+		    						'totalPendings'			=> 	$totalPendings,
+    								'totalInvestment' 		=>	$totalInvestment,
+		    						'netProfitLoss' 		=>	$netProfitLoss,
+		    						'roiOnInvestment'		=>	$roiOnInvestment,
+		    						'totalAverageTimePeriod'=>	$totalAverageTimePeriod,
+		    						'annualisedROI'			=>  $annualisedROI,
+		    						'success'				=> 	$success,
+		    						
+    							];
+
+    	
+    	$data =[
+    			'allCalltypes' 		=> 	$allCalltypes, 
+    			'singleCallTypes' 	=> 	$singleCallTypes
+    			];
+
+    	return $data;
+
+		// echo '<pre>';
+		// print_r($data);
+		// echo '</pre>';
+
 
     }
+
+    public function display_data_in_tabular_format($reportFrontEnd) {
+    	
+    	$allRsearchCalls = $this->allRsearchCalls;
+		
+		foreach ($allRsearchCalls as $single ) {
+			$singleCallType[] = end($reportFrontEnd->detail_about_calls($single));
+		}
+
+		$this->singleCallType = $singleCallType;
+
+		return $singleCallType;
+
+		// echo '<pre>';
+		// print_r($singleCallType);
+		// echo '</pre>';	
+    }
+
+    public function display_overall_call_type_data() {
+    	foreach ($this->singleCallType as $singleCall ) {
+			
+			$OverallAllProducts['callsGiven'] += $singleCall['callsGiven'];
+			$OverallAllProducts['totalHits']	+=	$singleCall['totalHits'];
+			$OverallAllProducts['totalMisses'] += $singleCall['totalMisses'];
+			$OverallAllProducts['totalPendings']	+=	$singleCall['totalPendings'];
+			$OverallAllProducts['success'] += $singleCall['success'];
+			$OverallAllProducts['roiOnInvestment']	+=	$singleCall['roiOnInvestment'];
+			$OverallAllProducts['annualisedROI']	+=	$singleCall['annualisedROI'];	
+
+		}
+
+			return $OverallAllProducts;
+			// echo '<pre>';
+			// print_r($OverallAllProducts);
+			// echo '</pre>';
+    }
+
+    
 
 
 
