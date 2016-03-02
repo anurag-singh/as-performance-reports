@@ -10,7 +10,7 @@
  * @subpackage As_Performance_Reports/public
  */
 
-class Single_Call_Type {
+class Single_Call_Type extends Report_Formulas {
 	var $allCalls;
 	
 	/*	get all calls of perticular 'call type'
@@ -32,45 +32,117 @@ class Single_Call_Type {
     public function display_data_in_table($callType) {
     	$allCalls = $this->get_all_calls_from_specific_category($callType);
 
-    	$this->prepare_data_to_display($allCalls);		
+    	return $this->prepare_data_to_display($allCalls);		
     }
     
 
-	private function prepare_data_to_display($allCalls){	
+	private function prepare_data_to_display($allCalls) {	
 		$totalCallsgiven = 0;
 
-		foreach ($allCalls as $singlecall) {
+		foreach ($allCalls as $singleCall) {
 			$totalCallsgiven ++;
 
 			/*	Get all values from DB */
-			$action 	= $singlecall['action'];
-			$entryPrice = $singlecall['entryPrice'];
-			$exitPrice 	= $singlecall['exitPrice'];
+			$action 	= $singleCall['action'];
+			$entryPrice = $singleCall['entryPrice'];
+			$exitPrice 	= $singleCall['exitPrice'];
 			$noOfUnits 	= $this->noOfUnits($entryPrice);
 
 			// Do calculation and store the output in varriables
 			$plPerUnit 	= $this->plPerUnit($action, $entryPrice, $exitPrice);
 			$plPerLac 	= $this->plPerLac($plPerUnit, $noOfUnits);
 			$grossROI 	= $this->grossROI($plPerLac, $noOfUnits, $entryPrice). '%';
-			$finalResult= $this->finalResult($grossROI);
+			$finalResult = $this->finalResult($grossROI);
+			$finalResultIcon= $this->finalResultIcon($grossROI);
+
+			$successPercentage = $this->successPercentage($totalCallsgiven, $totalHits);
+			$totalInvestment = $this->totalInvestment($perCallInvestment);
+			$netProfitLoss = $this->netProfitLoss($plPerLac);
+			$roiOnInvestment = $this->roiOnInvestment($netProfitLoss, $totalInvestment);
+			$annualisedROI = $this->annualisedROI($netProfitLoss, $totalInvestment, $totalAverageTimePeriod);
+
 			
 			// Prepare a array to store the additional columns
 			$extraColumns = [
 						'plPerunit' 	=>	$plPerUnit,
 						'plPerLac'		=> 	$plPerLac,
 						'grossROI'		=>	$grossROI,
-						'finalResult'	=>	$finalResult,
-						
-
+						'finalResult'	=>	$finalResult,	
+						'finalResultIcon'	=>	$finalResultIcon,	
 					];
 
 			// Mergre arrays and make a single one
-			$singlecall = array_merge($singlecall, $extraColumns);
+			$singleCall = array_merge($singleCall, $extraColumns);
 
-			// echo '<pre>';
-			// print_r($singlecall);
-			// echo '</pre>';
+				if($finalResult == 'HIT') {
+					 $totalHits++;
+				}
+				elseif ($finalResult == 'MISS') {
+					$totalMisses++;
+				}
+				else{
+					if($totalPendings<=0){
+						return $totalPendings = 0;
+					}
+					$totalPendings++;
+				}
 
+
+			$singleCalls[] = $this->singleCalls($singleCall);
+
+
+		} 
+
+		// echo '<pre>';
+		// print_r($singleCalls);
+		// echo '</pre>';
+
+		
+
+		$summarisedSnapshot =	[
+							'callsGiven'		=>	$totalCallsgiven,
+							'totalHits' 		=>	$totalHits,
+							'totalMisses' 		=>	$totalMisses,
+							'totalPendings' 	=>	$totalPendings,
+							'successPercentage' =>	$successPercentage,
+							'roiOnInvestment' 	=>	$roiOnInvestment,
+							'annualisedROI' 	=>	$annualisedROI
+						];
+		
+		// echo '<pre>'; 
+		// 	print_r($summarisedSnapshot);
+		// echo '</pre>';
+
+		// $singleCallTypeData = 	[
+		// 							'singleCalls' 			=>		$singleCalls,
+		// 							'summarisedSnapshot' 	=>		$summarisedSnapshot
+		// 						]; 
+
+		// return $singleCallTypeData;
+
+		
+	}
+
+	private function singleCalls($singleCall) {
+
+		$singleCalls = 	[
+								'stockName'			=>	$singleCall['stockName'],
+								'entryDate'			=>	$singleCall['entryDate'],
+								'action'			=>	$singleCall['action'],
+								'entryPrice'		=>	$singleCall['entryPrice'],
+								'targetPrice'		=>	$singleCall['targetPrice'],
+								'stopLoss'			=>	$singleCall['stopLoss'],
+								'exitPrice'			=>	$singleCall['exitPrice'],
+								'plPerunit'			=>	$singleCall['plPerunit'],
+								'plPerLac'			=>	$singleCall['plPerLac'],
+								'grossROI'			=>	$singleCall['grossROI'],
+								'finalResultIcon'	=>	$singleCall['finalResultIcon'],
+							];
+
+			$this->display_all_calls_in_tabular_format($singleCall);
+	}
+
+	private function display_all_calls_in_tabular_format($singlecall) {
 			echo '<tr>';
 		    echo '<td>' .$singlecall['stockName']. '</td>';
 		    echo '<td>' .$singlecall['entryDate']. '</td>';
@@ -82,56 +154,17 @@ class Single_Call_Type {
 		    echo '<td>' .$singlecall['plPerunit']. '</td>';
 		    echo '<td>' .$singlecall['plPerLac']. '</td>';
 		    echo '<td>' .$singlecall['grossROI']. '</td>';
-		    echo '<td>' .$singlecall['finalResult']. '</td>';
-		    echo '<td>' .$singlecall['callsGiven']. '</td>';
+		    echo '<td>' .$singlecall['finalResultIcon']. '</td>';
 		    echo '</tr>';
-		} 
+	}
 
-		$summarised['callsGiven']	= $totalCallsgiven;
-		
-		echo '<pre>'; 
-			print_r($summarised);
-		echo '</pre>'; 
+	private function summarisedSnapshot() {
 
-		
 	}
 
 
-	private function plPerUnit($action, $entryPrice, $exitPrice) {
-			if($action == 'BUY') {
-				$plPerUnit = $exitPrice - $entryPrice;
-			}
-			else {
-				$plPerUnit =  $entryPrice - $exitPrice;
-			}
 
-			$plPerUnit = number_format((float)$plPerUnit, 2, '.', '');
-
-			return $plPerUnit;
-	}
-
-	private function noOfUnits($entryPrice) {
-		return floor(100000/$entryPrice);
-	}
-
-	private function plPerLac($plPerUnit, $noOfUnits) {
-		return $plPerUnit*$noOfUnits;
-	}
-
-	private function grossROI($plPerLac, $noOfUnits, $entryPrice) {
-		$test = $noOfUnits * $entryPrice;
-		if($test>0)
-		{
-			$number = $plPerLac/($noOfUnits * $entryPrice);
-			return number_format((float)$number, 4, '.', '');
-		}
-		else
-		{
-			return 0;
-		}
-	}
-
-	private function finalResult($grossROI) {
+	private function finalResultIcon($grossROI) {
 		if($grossROI<=0){
 			return '<button class="icn-btn"><span class="font-icn">&#xf088;</span></button>';
 		}

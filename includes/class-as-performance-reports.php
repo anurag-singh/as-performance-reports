@@ -165,9 +165,14 @@ class As_Performance_Reports {
         require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class_admin_report_table.php';
 
         /**
-         * The class responsible for defining all actions that are used to display last month report
+         * The class responsible for defining all formulas which are used to manupulate data
          */
-        require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-last-month-report.php';
+        require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-excel-formulas.php';
+		
+		/**
+		 * The class responsible for defining all actions that are used to display last month report
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-last-month-report.php';
 
 		/**
          * The class responsible for defining all actions that are used to display all records of perticualr call type
