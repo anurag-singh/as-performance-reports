@@ -73,15 +73,9 @@ class Single_Call_Type extends Report_Formulas {
 			// Do calculation and store the output in varriables
 			$plPerUnit 	= $this->plPerUnit($action, $entryPrice, $exitPrice);
 			$plPerLac 	= $this->plPerLac($plPerUnit, $noOfUnits);
-			$grossROI 	= $this->grossROI($plPerLac, $noOfUnits, $entryPrice). '%';
+			$grossROI 	= $this->grossROI($plPerLac, $noOfUnits, $entryPrice);
 			$finalResult = $this->finalResult($grossROI);
 			$finalResultIcon= $this->finalResultIcon($grossROI);
-
-			$successPercentage = $this->successPercentage($totalCallsgiven, $totalHits);
-			$totalInvestment = $this->totalInvestment($perCallInvestment);
-			$netProfitLoss = $this->netProfitLoss($plPerLac);
-			$roiOnInvestment = $this->roiOnInvestment($netProfitLoss, $totalInvestment);
-			$annualisedROI = $this->annualisedROI($netProfitLoss, $totalInvestment, $totalAverageTimePeriod);
 
 			
 			// Prepare a array to store the additional columns
@@ -110,7 +104,20 @@ class Single_Call_Type extends Report_Formulas {
 				}
 
 			$singleCalls[] = $this->singleCalls($singleCall);
+
+			$totalPlPerLac = $this->totalPlPerLac += $extraColumns['plPerLac'];
+
 		} 
+
+		echo $perCallInvestment;
+		$totalInvestment = $this->totalInvestment($perCallInvestment);
+
+		$totalPlPerLac;
+
+
+		// Calculate the success and convert it into Percentage
+		$successPercentage = $this->successPercentage($totalCallsgiven, $totalHits, $totalPendings);
+		
 
 		$summarisedSnapshot =	[
 							'callsGiven'		=>	$totalCallsgiven,
@@ -118,9 +125,12 @@ class Single_Call_Type extends Report_Formulas {
 							'totalMisses' 		=>	$totalMisses,
 							'totalPendings' 	=>	$totalPendings,
 							'successPercentage' =>	$successPercentage,
+							'totalPlPerLac'		=>	$totalPlPerLac,
 							'roiOnInvestment' 	=>	$roiOnInvestment,
 							'annualisedROI' 	=>	$annualisedROI
-						];		
+						];	
+
+		
 		
 
 		$singleCallTypeData = 	[
@@ -214,8 +224,8 @@ class Single_Call_Type extends Report_Formulas {
 					echo '<td>' .$summarisedSnapshot['totalMisses']. '</td>';
 					echo '<td>' .$summarisedSnapshot['totalPendings']. '</td>';
 					echo '<td>' .$summarisedSnapshot['successPercentage']. '</td>';
-					echo '<td>' .$summarisedSnapshot['roiOnInvestment']. '</td>';
-					echo '<td>' .$summarisedSnapshot['annualisedROI']. '</td>';
+					echo '<td>' .$summarisedSnapshot['roiOnInvestment']. ' </td>';
+					echo '<td>' .$summarisedSnapshot['annualisedROI']. ' </td>';
 					echo '<tr>';
 					?>
 					<tr> <td colspan="7"></td> </tr>

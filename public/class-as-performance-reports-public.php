@@ -96,7 +96,7 @@ class As_Performance_Reports_Public {
          * class.
          */
 
-        wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/as-performance-reports-public.js', array( 'jquery' ), $this->version, false );
+        wp_enqueue_script( 'dataTable', plugin_dir_url( __FILE__ ) . 'js/as-performance-reports-public.js', array( 'jquery' ), $this->version, false );
 
     }
 }

@@ -21,12 +21,34 @@ class Last_Month_Report extends Report_Formulas {
 	var $totalMisses;
 	var $totalPendings;
 	var $singleCallType;
-	var $allRsearchCalls = ['Trading', 'Positional'];		// Define all research calls in array
+	var $callCatArray;		// Define all research calls in array
+
+	function __construct() {
+		$this->get_unique_call_type();	
+	}
 	
+    
+	private function get_unique_call_type() {
+		global $wpdb;
+		$selectAllCategories = "SELECT DISTINCT stockCat
+								FROM	wp_performance_report
+								";
+
+		$allUniqueCats = $wpdb->get_results($selectAllCategories, OBJECT);
+
+		foreach ($allUniqueCats as $singleCat) {
+			$allCats[] = $singleCat->stockCat;
+		}
+
+		$this->callCatArray = $allCats;
+	}
+		
+
     public function get_all_calls() {
     	global $wpdb;
         $today = date('Y-m-d');
-        $startDate = date('Y-m-d',strtotime($today.'-1 day'));
+        // $startDate = date('Y-m-d',strtotime($today.'-1 day'));
+        $startDate = date('Y-m-d',strtotime($today));
         $endDate = date('Y-m-d',strtotime($startDate.'-30 day'));
 
         $queryAllCalls = "SELECT *
@@ -103,8 +125,8 @@ class Last_Month_Report extends Report_Formulas {
 					$totalMisses++;
 				}
 				else{
-					if($totalPendings<=0){
-						return $totalPendings = 0;
+					if($totalPendings <= 0){
+						return 0;
 					}
 					$totalPendings++;
 				}
@@ -123,7 +145,7 @@ class Last_Month_Report extends Report_Formulas {
     						'plPerUnit' 			=>	$plPerUnit,
     						'plPerLac' 				=>	$plPerLac,
     						'grossROI' 				=>	$grossROI . ' %',
-    						'finalResult' 			=>	$finalResult,
+    						'finalResult' 			=>	$finalResult . ' %',
     						'perCallInvestment' 	=>	$perCallInvestment,
     						'perCallProfitLoss' 	=>	$perCallProfitLoss,
     						'perCallROIonInvestment'=>	$perCallROIonInvestment,
@@ -170,9 +192,9 @@ class Last_Month_Report extends Report_Formulas {
 
     public function display_data_in_tabular_format($reportFrontEnd) {
     	
-    	$allRsearchCalls = $this->allRsearchCalls;
+    	$callCatArray = $this->callCatArray;
 		
-		foreach ($allRsearchCalls as $single ) {
+		foreach ($callCatArray as $single ) {
 			$singleCallType[] = end($reportFrontEnd->detail_about_calls($single));
 		}
 
@@ -197,11 +219,21 @@ class Last_Month_Report extends Report_Formulas {
 			$OverallAllProducts['annualisedROI']	+=	$singleCall['annualisedROI'];	
 
 		}
+			
 
-			return $OverallAllProducts;
-			// echo '<pre>';
-			// print_r($OverallAllProducts);
-			// echo '</pre>';
+		// Get the total no of calls from the array
+		$totalCallCats = count($this->callCatArray);
+
+		// Get the all the success value and divied them to get average of success
+		$OverallAllProducts['totalSuccessPercent'] = $OverallAllProducts['success']/$totalCallCats  . ' %';;
+
+		// Get the all the roiOnInvestment value and divied them to get the average of roiOnInvestment
+		$OverallAllProducts['totalRoiOnInvestmentPercent'] = $OverallAllProducts['roiOnInvestment']/$totalCallCats . ' %';
+
+		// Get the all the annualisedROI value and divied them to get the average of annualisedROI
+		$OverallAllProducts['totalAnnualisedROIPercent'] = $OverallAllProducts['annualisedROI']/$totalCallCats  . ' %';;
+
+		return $OverallAllProducts;
     }
 
     

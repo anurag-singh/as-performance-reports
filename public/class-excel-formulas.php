@@ -1,6 +1,7 @@
 <?php
 	
 	class Report_Formulas {
+		var $sumOfPlPerLac;
 
 	protected function timePeriod($entryDate, $exitDate){
     		$entryDate = strtotime($entryDate);
@@ -33,11 +34,11 @@
 	}
 
 	protected function grossROI($plPerLac, $noOfUnits, $entryPrice) {
-		$test = $noOfUnits * $entryPrice;
-		if($test>0)
+		$number = $noOfUnits * $entryPrice;
+		if($number>0)
 		{
-			$number = $plPerLac/($noOfUnits * $entryPrice);
-			return number_format((float)$number, 4, '.', '');
+			$grossROI = ($plPerLac/($noOfUnits * $entryPrice))*100;
+			return number_format((float)$grossROI, 2, '.', '') . ' %';
 		}
 		else
 		{
@@ -85,7 +86,7 @@
 
 	protected function roiOnInvestment($netProfitLoss, $totalInvestment) {
 		$roiOnInvestment = $netProfitLoss / $totalInvestment;
-		return number_format($roiOnInvestment, 4 , '.', '');
+		return number_format($roiOnInvestment, 4 , '.', ''). ' %';
 	}
 
 	protected function totalAverageTimePeriod($timePeriod, $totalCallsgiven) {
@@ -99,14 +100,18 @@
 	protected function annualisedROI($netProfitLoss, $totalInvestment, $totalAverageTimePeriod) {
 		$secondNo =   $totalInvestment * $totalAverageTimePeriod / 365;
 		$annualisedROI = $netProfitLoss / $secondNo;
-		return number_format((float)$annualisedROI, 4, '.', '');
+		return number_format((float)$annualisedROI, 4, '.', ''). ' %';
 	}
 
 	protected function successPercentage($totalCallsgiven, $totalHits) {
 		if($totalHits>0){
-			$successRate = ($totalCallsgiven /  $totalHits) * 100;
-			return number_format($successRate, 1, '.', ''). ' %';
+			$successRate = ($totalHits/($totalCallsgiven - $totalPendings)) * 100;
+			return number_format($successRate, 2, '.', ''). ' %';
 		}
+	}
+
+	protected function sumOfPlPerLac($plPerLac) {
+		 return $this->sumOfPlPerLac += $plPerLac;
 	}
 }
 
