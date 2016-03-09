@@ -60,7 +60,7 @@ class Last_Month_Report extends Report_Formulas {
     } 
 
     public function detail_about_calls($category) {
-    	$totalCallsgiven = 0;
+    	$totalCallsgivenTillYet = 0;
     	$allCalls = $this->get_all_calls();
 
     	foreach ($allCalls as $singleCall) {
@@ -74,7 +74,7 @@ class Last_Month_Report extends Report_Formulas {
 
     		// For total calls of category given
     		if($stockCat == $category) {
-    			$totalCallsgiven ++;
+    			$totalCallsgivenTillYet ++;
 
 				//  For time period of each call
 				$timePeriod = $this->timePeriod($entryDate, $exitDate);
@@ -94,29 +94,19 @@ class Last_Month_Report extends Report_Formulas {
 				// Final result
 				$finalResult = $this->finalResult($grossROI);
 
-				// Per call Investment
-				$perCallInvestment = $this->perCallInvestment($entryPrice, $noOfUnits);
+				// Sum all time periods
+				$totalTimePeriod += $timePeriod;
 
-				// Per call Profit
-				$perCallProfitLoss = $this->perCallProfitLoss($plPerLac);
+				// Calculate ROI on investment with total netprofitloss and totalInvestment
+				$roiOnInvestment = $this->roiOnInvestment($netProfitLossTillYet, $totalInvestmentTillYet);
 
-				// Per call ROI on Investment
-				$perCallROIonInvestment = $this->perCallROIonInvestment($perCallProfitLoss, $perCallInvestment);
+				$totalAverageTimePeriod =  $this->totalAverageTimePeriod($totalTimePeriod, $totalCallsgivenTillYet);
 
-				// Total investment
-				$totalInvestment = $this->totalInvestment($perCallInvestment);
+				$totalInvestmentTillYet = $this->totalInvestmentTillYet($entryPrice, $noOfUnits);
+				
+				$netProfitLossTillYet = $this->netProfitLossTillYet($plPerLac);			
 
-				// Net Profit or Loss
-				$netProfitLoss = $this->netProfitLoss($plPerLac);
-
-				// ROI on Investment
-				$roiOnInvestment = $this->roiOnInvestment($netProfitLoss, $totalInvestment);
-
-				// Total Average Time Period
-				$totalAverageTimePeriod = $this->totalAverageTimePeriod($timePeriod, $totalCallsgiven);
-
-				// Annualised ROI
-				$annualisedROI = $this->annualisedROI($netProfitLoss, $totalInvestment, $totalAverageTimePeriod);
+				$annualisedROI = $this->annualisedROI($netProfitLossTillYet, $totalInvestmentTillYet, $totalAverageTimePeriod);
 
 				if($finalResult == 'HIT') {
 					 $totalHits++;
@@ -132,14 +122,14 @@ class Last_Month_Report extends Report_Formulas {
 				}
 
 
-				$success = $this->successPercentage($totalCallsgiven, $totalHits);
+				$success = $this->successPercentage($totalCallsgivenTillYet, $totalHits);
     		}
 
 			$allCalltypes[] = 	[
 							'action'				=> 	$action,
 							'entryPrice'			=> 	$entryPrice,
 							'exitPrice'				=> 	$exitPrice,
-    						'totalCalls' 			=>	$totalCallsgiven,
+    						'totalCalls' 			=>	$totalCallsgivenTillYet,
     						'timePeriod' 			=>	$timePeriod,
     						'noOfUnits' 			=>	$noOfUnits,
     						'plPerUnit' 			=>	$plPerUnit,
@@ -162,7 +152,7 @@ class Last_Month_Report extends Report_Formulas {
     	}
 
     	$singleCallTypes	= 	[
-    								'callsGiven' 			=>	$totalCallsgiven,
+    								'callsGiven' 			=>	$totalCallsgivenTillYet,
     								'totalHits'				=>	$totalHits,
 		    						'totalMisses'			=>	$totalMisses,
 		    						'totalPendings'			=> 	$totalPendings,

@@ -45,9 +45,9 @@ $report = new Excel2Mysql();
 
 $sheetData = $report->fetch_records_from_excel($sheetname, $inputFileName);
 
-//echo 'Excel- <pre>';
-//print_r($sheetData);
-//echo '<pre>';
+// echo 'Excel- <pre>';
+// print_r($sheetData);
+// echo '<pre>';
 /**********************************************************************************/
 
 

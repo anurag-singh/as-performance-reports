@@ -218,9 +218,9 @@ class As_Performance_Reports {
         //$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
         $this->loader->add_action( 'init', $plugin_admin, 'create_new_cpt');
         //$this->loader->add_action ( 'init', $plugin_admin, 'create_second_cpt');
-        $this->loader->add_action ( 'init', $plugin_admin, 'create_new_taxonomy');
+        //$this->loader->add_action ( 'init', $plugin_admin, 'create_new_taxonomy');
 
-        $this->loader->add_action ('admin_menu', $plugin_admin, 'add_menu_example_list_table_page');
+        //$this->loader->add_action ('admin_menu', $plugin_admin, 'add_menu_example_list_table_page');
 
         //$this->loader->add_action( 'admin_menu', $plugin_admin, 'my_admin_menu' );
 
@@ -237,7 +237,7 @@ class As_Performance_Reports {
 
         $plugin_public = new As_Performance_Reports_Public( $this->get_plugin_name(), $this->get_version() );
 
-        //$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
+        $this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
        	$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 
         //$last_month_report = new Last_Month_Report();

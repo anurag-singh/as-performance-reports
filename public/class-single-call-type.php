@@ -59,32 +59,42 @@ class Single_Call_Type extends Report_Formulas {
     
 
 	private function prepare_data_to_display($allCalls) {	
-		$totalCallsgiven = 0;
+		$totalCallsgivenTillYet = 0;
 
 		foreach ($allCalls as $singleCall) {
-			$totalCallsgiven ++;
+			$totalCallsgivenTillYet ++;
 
-			/*	Get all values from DB */
+
+			$totalCallsgivenTillYet;
 			$action 	= $singleCall['action'];
 			$entryPrice = $singleCall['entryPrice'];
 			$exitPrice 	= $singleCall['exitPrice'];
-			$noOfUnits 	= $this->noOfUnits($entryPrice);
-
-			// Do calculation and store the output in varriables
-			$plPerUnit 	= $this->plPerUnit($action, $entryPrice, $exitPrice);
-			$plPerLac 	= $this->plPerLac($plPerUnit, $noOfUnits);
-			$grossROI 	= $this->grossROI($plPerLac, $noOfUnits, $entryPrice);
-			$finalResult = $this->finalResult($grossROI);
+			$entryDate		= $singleCall['entryDate'];
+			$exitDate		= $singleCall['exitDate'];
+			$timePeriod 	= $this->timePeriod($entryDate, $exitDate);
+			$noOfUnits 		= $this->noOfUnits($entryPrice);
+			$plPerUnit 		= $this->plPerUnit($action, $entryPrice, $exitPrice);
+			$plPerLac 		= $this->plPerLac($plPerUnit, $noOfUnits);
+			$grossROI 		= $this->grossROI($plPerLac, $noOfUnits, $entryPrice);
+			$finalResult 	= $this->finalResult($grossROI);
 			$finalResultIcon= $this->finalResultIcon($grossROI);
-
+			$totalInvestmentTillYet = $this->totalInvestmentTillYet($entryPrice, $noOfUnits);
+			$netProfitLossTillYet = $this->netProfitLossTillYet($plPerLac);
+			// Sum all time periods
+			$totalTimePeriod += $timePeriod;
 			
 			// Prepare a array to store the additional columns
 			$extraColumns = [
+						'totalCallsgivenTillYet' => $totalCallsgivenTillYet,
+						'timePeriod'	=> $timePeriod,
+						'totalTimePeriod'=> $totalTimePeriod,
 						'plPerunit' 	=>	$plPerUnit,
 						'plPerLac'		=> 	$plPerLac,
 						'grossROI'		=>	$grossROI,
 						'finalResult'	=>	$finalResult,	
 						'finalResultIcon'	=>	$finalResultIcon,	
+						'totalInvestmentTillYet'=> $totalInvestmentTillYet,
+						'netProfitLossTillYet'	=> $netProfitLossTillYet,
 					];
 
 			// Mergre arrays and make a single one
@@ -105,27 +115,30 @@ class Single_Call_Type extends Report_Formulas {
 
 			$singleCalls[] = $this->singleCalls($singleCall);
 
-			$totalPlPerLac = $this->totalPlPerLac += $extraColumns['plPerLac'];
 
+			$perCallInvestment = $this->perCallInvestment($entryPrice, $noOfUnits);	// each call investment
+			$totalPerCallInvestment += $perCallInvestment;	// Sum investment of each call and return the total
 		} 
-
-		echo $perCallInvestment;
-		$totalInvestment = $this->totalInvestment($perCallInvestment);
-
-		$totalPlPerLac;
 
 
 		// Calculate the success and convert it into Percentage
-		$successPercentage = $this->successPercentage($totalCallsgiven, $totalHits, $totalPendings);
+		$successPercentage = $this->successPercentage($totalCallsgivenTillYet, $totalHits, $totalPendings);
+		// Calculate ROI on investment with total netprofitloss and totalInvestment
+		$roiOnInvestment = $this->roiOnInvestment($netProfitLossTillYet, $totalInvestmentTillYet);
+
+
+		$totalAverageTimePeriod =  $this->totalAverageTimePeriod($totalTimePeriod, $totalCallsgivenTillYet);
+
+
+		$annualisedROI = $this->annualisedROI($netProfitLossTillYet, $totalInvestmentTillYet, $totalAverageTimePeriod);
 		
 
 		$summarisedSnapshot =	[
-							'callsGiven'		=>	$totalCallsgiven,
+							'callsGiven'		=>	$totalCallsgivenTillYet,
 							'totalHits' 		=>	$totalHits,
 							'totalMisses' 		=>	$totalMisses,
 							'totalPendings' 	=>	$totalPendings,
 							'successPercentage' =>	$successPercentage,
-							'totalPlPerLac'		=>	$totalPlPerLac,
 							'roiOnInvestment' 	=>	$roiOnInvestment,
 							'annualisedROI' 	=>	$annualisedROI
 						];	

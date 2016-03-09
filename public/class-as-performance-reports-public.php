@@ -73,7 +73,7 @@ class As_Performance_Reports_Public {
          * class.
          */
 
-        wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/as-performance-reports-public.css', array(), $this->version, 'all' );
+        wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/jquery.dataTables.css', array(), $this->version, 'all' );
 
     }
 
@@ -96,7 +96,9 @@ class As_Performance_Reports_Public {
          * class.
          */
 
-        wp_enqueue_script( 'dataTable', plugin_dir_url( __FILE__ ) . 'js/as-performance-reports-public.js', array( 'jquery' ), $this->version, false );
+        wp_enqueue_script( 'dataTables', plugin_dir_url( __FILE__ ) . 'js/jquery.dataTables.min.js', array( 'jquery' ), $this->version, false );
+
+        wp_enqueue_script( 'as-performance-reports-public', plugin_dir_url( __FILE__ ) . 'js/as-performance-reports-public.js', array( 'jquery' ), $this->version, false );
 
     }
 }
