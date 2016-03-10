@@ -36,7 +36,7 @@ $(document).ready(function($) {
             "processing": true,
             "serverSide": true,
             "ajax":{
-                url :"employee-grid-data.php", // json datasource
+                url :"../wp-content/plugins/as-performance-reports/public/employee-grid-data.php", // json datasource
                 type: "post",  // method  , by default get
                 error: function(){  // error handling
                     $(".employee-grid-error").html("");

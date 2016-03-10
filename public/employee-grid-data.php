@@ -1,4 +1,5 @@
 <?php
+global $wpdb;
 /* Database connection start */
 $servername = "localhost";
 $username = "root";
@@ -16,11 +17,11 @@ $requestData= $_REQUEST;
 $columns = array( 
 // datatable column index  => database column name
 	0 => 'ID', 
-	1 => 'stockCat',
+	1 => 'entryDate',
 	2 => 'stockID',
 	3 => 'stockName',
 	4 => 'action',
-	5 => 'entryDate',
+	5 => 'stockCat',
 	6 => 'exitDate'
 );
 
@@ -29,7 +30,7 @@ $columns = array(
 // getting total number records without any search
 $sql = "SELECT *";
 $sql.=" FROM wp_performance_report";
-$query=mysqli_query($conn, $sql) or die("employee-grid-data-2.php: get employees");
+$query=mysqli_query($conn, $sql) or die("employee-grid-data.php: get employees");
 $totalData = mysqli_num_rows($query);
 $totalFiltered = $totalData;  // when there is no search parameter then total number rows = total number filtered rows.
 
@@ -58,11 +59,11 @@ if( !empty($requestData['columns'][6]['search']['value']) ){
 	$sql.=" AND  exitDate LIKE '".$requestData['columns'][6]['search']['value']."%' ";
 }
 
-$query=mysqli_query($conn, $sql) or die("employee-grid-data-2.php: get employees");
+$query=mysqli_query($conn, $sql) or die("employee-grid-data.php: get employees");
 $totalFiltered = mysqli_num_rows($query); // when there is a search parameter then we have to modify total number filtered rows as per search result. 
 $sql.=" ORDER BY ". $columns[$requestData['order'][0]['column']]."   ".$requestData['order'][0]['dir']."  LIMIT ".$requestData['start']." ,".$requestData['length']."   ";
 /* $requestData['order'][0]['column'] contains column index, $requestData['order'][0]['dir'] contains order such as asc/desc  */	
-$query=mysqli_query($conn, $sql) or die("employee-grid-data-2.php: get employees1");
+$query=mysqli_query($conn, $sql) or die("employee-grid-data.php: get employees1");
 	
 
 $data = array();
@@ -70,7 +71,7 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
 	$nestedData=array(); 
 
 	$nestedData[] = $row["ID"];
-	$nestedData[] = $row["stockCat"];
+	$nestedData[] = $row["entryDate"];
 	$nestedData[] = $row["stockID"];
 	$nestedData[] = $row["stockName"];
 	$nestedData[] = $row["action"];

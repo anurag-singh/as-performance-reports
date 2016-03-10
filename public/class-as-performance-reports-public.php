@@ -116,16 +116,18 @@ class As_Performance_Reports_Public {
 	function my_action_callback() {
 		global $wpdb;
 
-		$selctTotalCount = "SELECT COUNT('ID')
-							FROM wp_performance_report
-							";
+		$queryAllCalls = 	"SELECT *
+		                    FROM    wp_performance_report
+		                    WHERE   stockCat = 'Trading'
+		                    ORDER BY lastUpdate ASC
+		                    ";
 
-		$whatever = $wpdb->get_results($selctTotalCount, ARRAY_N);
+		$queryAllCalls = $wpdb->get_results($queryAllCalls, ARRAY_A);
 
 		// $whatever = intval( $_POST['whatever'] );
 		// $whatever += 10;
-	        echo $whatever[0][0];
-	        // print_r ($whatever);
+	        //echo $whatever[0][0];
+	         print_r ($queryAllCalls);
 		wp_die();
 	}
 
