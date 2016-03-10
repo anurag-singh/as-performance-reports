@@ -240,8 +240,10 @@ class As_Performance_Reports {
         $this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
        	$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 
-        //$last_month_report = new Last_Month_Report();
+       	$this->loader->add_action( 'wp_ajax_my_action', $plugin_public,  'my_action_callback' );
+       	$this->loader->add_action( 'wp_ajax_nopriv_my_action', $plugin_public, 'my_action_callback' );
 
+        //$this->loader->add_action( 'admin_enqueue_scripts', $plugin_public, 'my_enqueue' );
     }
 
     /**

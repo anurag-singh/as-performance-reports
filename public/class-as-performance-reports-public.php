@@ -100,7 +100,38 @@ class As_Performance_Reports_Public {
 
         wp_enqueue_script( 'as-performance-reports-public', plugin_dir_url( __FILE__ ) . 'js/as-performance-reports-public.js', array( 'jquery' ), $this->version, false );
 
+
+
+
+        wp_enqueue_script( 'ajax-script', plugins_url( '/js/my_query.js', __FILE__ ), array('jquery') );
+
+		// in JavaScript, object properties are accessed as ajax_object.ajax_url, ajax_object.we_value
+		wp_localize_script( 'ajax-script', 'ajax_object',
+	            array( 'ajax_url' => admin_url( 'admin-ajax.php' ), 'we_value' => 1234 ) );
+	
+
     }
+
+    // Same handler function...
+	function my_action_callback() {
+		global $wpdb;
+
+		$selctTotalCount = "SELECT COUNT('ID')
+							FROM wp_performance_report
+							";
+
+		$whatever = $wpdb->get_results($selctTotalCount, ARRAY_N);
+
+		// $whatever = intval( $_POST['whatever'] );
+		// $whatever += 10;
+	        echo $whatever[0][0];
+	        // print_r ($whatever);
+		wp_die();
+	}
+
+    
+	        
+		
 }
 
 
