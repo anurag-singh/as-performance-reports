@@ -93,30 +93,45 @@ $columns = array(
 );
 
 
+
 // getting total number records without any search
-$sql = "SELECT * ";
+$sql = "SELECT *";
 $sql.=" FROM wp_performance_report";
 $query=mysqli_query($conn, $sql) or die("employee-grid-data.php: get employees");
 $totalData = mysqli_num_rows($query);
 $totalFiltered = $totalData;  // when there is no search parameter then total number rows = total number filtered rows.
 
 
-$sql = "SELECT * ";
+$sql = "SELECT *";
 $sql.=" FROM wp_performance_report WHERE 1=1";
-if( !empty($requestData['search']['value']) ) {   // if there is a search parameter, $requestData['search']['value'] contains search parameter
-	$sql.=" AND ( stockName LIKE '".$requestData['search']['value']."%' ";    
-	$sql.=" OR action LIKE '".$requestData['search']['value']."%' ";
-
-	$sql.=" OR entryDate LIKE '".$requestData['search']['value']."%' )";
+if( !empty($requestData['columns'][0]['search']['value']) ){
+	$sql.=" AND  stockName LIKE '".$requestData['columns'][0]['search']['value']."%' ";    
 }
+// if( !empty($requestData['columns'][1]['search']['value']) ){
+// 	$sql.=" AND  stockCat LIKE '".$requestData['columns'][1]['search']['value']."%' ";
+// }
+// if( !empty($requestData['columns'][2]['search']['value']) ){
+// 	$sql.=" AND  stockID LIKE '".$requestData['columns'][2]['search']['value']."%' ";
+// }
+// if( !empty($requestData['columns'][3]['search']['value']) ){
+// 	$sql.=" AND  stockName LIKE '".$requestData['columns'][3]['search']['value']."%' ";
+// }
+// if( !empty($requestData['columns'][4]['search']['value']) ){
+// 	$sql.=" AND  action LIKE '".$requestData['columns'][4]['search']['value']."%' ";
+// }
+// if( !empty($requestData['columns'][5]['search']['value']) ){
+// 	$sql.=" AND  entryDate LIKE '".$requestData['columns'][5]['search']['value']."%' ";
+// }
+// if( !empty($requestData['columns'][6]['search']['value']) ){
+// 	$sql.=" AND  exitDate LIKE '".$requestData['columns'][6]['search']['value']."%' ";
+// }
+
 $query=mysqli_query($conn, $sql) or die("employee-grid-data.php: get employees");
 $totalFiltered = mysqli_num_rows($query); // when there is a search parameter then we have to modify total number filtered rows as per search result. 
 $sql.=" ORDER BY ". $columns[$requestData['order'][0]['column']]."   ".$requestData['order'][0]['dir']."  LIMIT ".$requestData['start']." ,".$requestData['length']."   ";
-/* $requestData['order'][0]['column'] contains colmun index, $requestData['order'][0]['dir'] contains order such as asc/desc  */	
-$query=mysqli_query($conn, $sql) or die("employee-grid-data.php: get employees");
-
-
-
+/* $requestData['order'][0]['column'] contains column index, $requestData['order'][0]['dir'] contains order such as asc/desc  */	
+$query=mysqli_query($conn, $sql) or die("employee-grid-data.php: get employees1");
+	
 $data = array();
 while( $row=mysqli_fetch_array($query) ) {  // preparing an array
 	$nestedData=array(); 

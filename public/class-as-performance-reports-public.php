@@ -103,11 +103,10 @@ class As_Performance_Reports_Public {
 
 
 
-        wp_enqueue_script( 'ajax-script', plugins_url( '/js/my_query.js', __FILE__ ), array('jquery') );
+        //wp_enqueue_script( 'ajax-script', plugins_url( '/js/my_query.js', __FILE__ ), array('jquery') );
 
 		// in JavaScript, object properties are accessed as ajax_object.ajax_url, ajax_object.we_value
-		wp_localize_script( 'ajax-script', 'ajax_object',
-	            array( 'ajax_url' => admin_url( 'admin-ajax.php' ), 'we_value' => 1234 ) );
+		// wp_localize_script( 'ajax-script', 'ajax_object', array( 'ajax_url' => admin_url( 'admin-ajax.php' ), 'we_value' => 1234 ) );
 	
 
     }

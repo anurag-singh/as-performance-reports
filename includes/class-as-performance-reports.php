@@ -220,7 +220,7 @@ class As_Performance_Reports {
         //$this->loader->add_action ( 'init', $plugin_admin, 'create_second_cpt');
         //$this->loader->add_action ( 'init', $plugin_admin, 'create_new_taxonomy');
 
-        //$this->loader->add_action ('admin_menu', $plugin_admin, 'add_menu_example_list_table_page');
+        $this->loader->add_action ('admin_menu', $plugin_admin, 'add_menu_page_for_all_call_tabuler_view');
 
         //$this->loader->add_action( 'admin_menu', $plugin_admin, 'my_admin_menu' );
 

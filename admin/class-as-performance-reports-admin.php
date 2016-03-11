@@ -306,11 +306,11 @@ class As_Performance_Reports_Admin {
 
 
     /**
+     * Add a submenu in plugin main page
      * Menu item will allow us to load the page to display the table
      */
-    public function add_menu_example_list_table_page()
-    {
-        add_menu_page( 'All Reports', 'All Reports', 'manage_options', 'performance-reports.php', array($this, 'list_table_page'), NULL , 30);
+    public function add_menu_page_for_all_call_tabuler_view()
+    {add_submenu_page( 'edit.php?post_type=performance_excel', 'All Calls Reports', 'All Given Calls', 'manage_options', 'view=all_call_report', array($this, 'list_table_page'));
     }
 
     /**
