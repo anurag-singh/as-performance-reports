@@ -155,7 +155,7 @@ class Single_Call_Type extends Report_Formulas {
 		$summarisedSnapshot = $singleCallTypeData['summarisedSnapshot'];
 
 		$this->display_summarisedSnapshot($summarisedSnapshot);	
-		$this->display_all_calls_in_tabular_format($singleCalls);		
+		//$this->display_all_calls_in_tabular_format($singleCalls);		
 	}
 
 	private function display_all_calls_in_tabular_format($singleCalls) {
