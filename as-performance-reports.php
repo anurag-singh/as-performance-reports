@@ -9,7 +9,7 @@
  * that starts the plugin.
  *
  * @link              https://www.facebook.com/anuragsingh.me
- * @since             1.5
+ * @since             1.6
  * @package           As_Performance_Reports
  *
  * @wordpress-plugin
@@ -17,7 +17,7 @@
  * Plugin URI:        http://www.dselva.co.in
  * Plugin Type:       Piklist
  * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
- * Version:           1.5
+ * Version:           1.6
  * Author:            Anurag Singh
  * Author URI:        https://www.facebook.com/anuragsingh.me
  * License:           GPL-2.0+
