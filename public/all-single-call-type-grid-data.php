@@ -62,7 +62,7 @@ function finalResultIcon($grossROI) {
 /*	End Custom Functions to make calculations */	
 
 
-global $wpdb;
+
 /* Database connection start */
 $servername = "localhost";
 $username = "root";
@@ -94,10 +94,9 @@ $columns = array(
 
 
 // getting total number records without any search
-$sql = "SELECT * ";
-$sql.=" FROM wp_performance_report ";
-$sql.= " WHERE stockCat = 'Trading'";
-$query = mysqli_query($conn, $sql) or die("employee-grid-data.php: get employees");
+$sql = "SELECT * FROM wp_performance_report WHERE stockCat = 'Trading'";
+
+$query = mysqli_query($conn, $sql) or die("all-single-call-type-grid-data.php: get all calls");
 $totalData = mysqli_num_rows($query);
 $totalFiltered = $totalData;  // when there is no search parameter then total number rows = total number filtered rows.
 
@@ -108,11 +107,11 @@ if( !empty($requestData['search']['value']) ) {   // if there is a search parame
 
 	$sql.=" OR entryDate LIKE '".$requestData['search']['value']."%' )";
 }
-$query = mysqli_query($conn, $sql) or die("employee-grid-data.php: get employees");
+$query = mysqli_query($conn, $sql) or die("all-single-call-type-grid-data.php: get all calls");
 $totalFiltered = mysqli_num_rows($query); // when there is a search parameter then we have to modify total number filtered rows as per search result. 
 $sql.=" ORDER BY ". $columns[$requestData['order'][0]['column']]."   ".$requestData['order'][0]['dir']."  LIMIT ".$requestData['start']." ,".$requestData['length']."   ";
 /* $requestData['order'][0]['column'] contains colmun index, $requestData['order'][0]['dir'] contains order such as asc/desc  */	
-$query=mysqli_query($conn, $sql) or die("employee-grid-data.php: get employees");
+$query=mysqli_query($conn, $sql) or die("all-single-call-type-grid-data.php: get all calls");
 
 
 

@@ -32,16 +32,16 @@
 })( jQuery );
 
 $(document).ready(function($) {
-        var dataTable = $('#employee-grid').DataTable( {
+        var dataTable = $('#all-single-type-calls-grid').DataTable( {
             "processing": true,
             "serverSide": true,
             "ajax":{
-                url :"../wp-content/plugins/as-performance-reports/public/employee-grid-data.php", // json datasource
+                url :"../wp-content/plugins/as-performance-reports/public/all-single-call-type-grid-data.php", // json datasource
                 type: "post",  // method  , by default get
                 error: function(){  // error handling
-                    $(".employee-grid-error").html("");
-                    $("#employee-grid").append('<tbody class="employee-grid-error"><tr><th colspan="3">No data found in the server</th></tr></tbody>');
-                    $("#employee-grid_processing").css("display","none");
+                    $(".all-single-type-calls-grid-error").html("");
+                    $("#all-single-type-calls-grid").append('<tbody class="all-single-type-calls-grid-error"><tr><th colspan="3">No data found in the server</th></tr></tbody>');
+                    $("#all-single-type-calls-grid_processing").css("display","none");
  
                 }
             }
