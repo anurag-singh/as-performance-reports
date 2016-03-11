@@ -101,6 +101,9 @@ class As_Performance_Reports_Public {
         wp_enqueue_script( 'as-performance-reports-public', plugin_dir_url( __FILE__ ) . 'js/as-performance-reports-public.js', array( 'jquery' ), $this->version, false );
 
 
+        wp_enqueue_script( 'as-scrollto', plugin_dir_url( __FILE__ ) . 'js/jquery-scrollto.js', array( 'jquery' ), $this->version, false );
+
+
 
 
         //wp_enqueue_script( 'ajax-script', plugins_url( '/js/my_query.js', __FILE__ ), array('jquery') );

@@ -92,56 +92,61 @@ $columns = array(
 	10 => 'stopLoss'
 );
 
+$category = 'Trading';
+if(isset($requestData['cat']) && !empty($requestData['cat']))
+{$category = $requestData['cat'];}
 
-// getting total number records without any search
-$sql = "SELECT * FROM wp_performance_report WHERE stockCat = 'Trading'";
+	// getting total number records without any search
+	$sql = "SELECT * FROM wp_performance_report WHERE stockCat = '".$category."'";
 
-$query = mysqli_query($conn, $sql) or die("all-single-call-type-grid-data.php: get all calls");
-$totalData = mysqli_num_rows($query);
-$totalFiltered = $totalData;  // when there is no search parameter then total number rows = total number filtered rows.
-
-
-if( !empty($requestData['search']['value']) ) {   // if there is a search parameter, $requestData['search']['value'] contains search parameter
-	$sql.=" AND stockCat = 'Trading' AND ( stockName LIKE '".$requestData['search']['value']."%' ";    
-	$sql.=" OR action LIKE '".$requestData['search']['value']."%' ";
-
-	$sql.=" OR entryDate LIKE '".$requestData['search']['value']."%' )";
-}
-$query = mysqli_query($conn, $sql) or die("all-single-call-type-grid-data.php: get all calls");
-$totalFiltered = mysqli_num_rows($query); // when there is a search parameter then we have to modify total number filtered rows as per search result. 
-$sql.=" ORDER BY ". $columns[$requestData['order'][0]['column']]."   ".$requestData['order'][0]['dir']."  LIMIT ".$requestData['start']." ,".$requestData['length']."   ";
-/* $requestData['order'][0]['column'] contains colmun index, $requestData['order'][0]['dir'] contains order such as asc/desc  */	
-$query=mysqli_query($conn, $sql) or die("all-single-call-type-grid-data.php: get all calls");
+	$query = mysqli_query($conn, $sql) or die("all-single-call-type-grid-data.php: get all calls");
+	$totalData = mysqli_num_rows($query);
+	$totalFiltered = $totalData;  // when there is no search parameter then total number rows = total number filtered rows.
 
 
+	if( !empty($requestData['search']['value']) ) {   // if there is a search parameter, $requestData['search']['value'] contains search parameter
+		$sql.=" AND stockCat = 'Trading' AND ( stockName LIKE '".$requestData['search']['value']."%' ";    
+		$sql.=" OR action LIKE '".$requestData['search']['value']."%' ";
 
-$data = array();
-while( $row=mysqli_fetch_array($query) ) {  // preparing an array
-	$nestedData=array(); 
+		$sql.=" OR entryDate LIKE '".$requestData['search']['value']."%' )";
+	}
 
 
-	/*	Prepare column data to display on front-end display */
-	$plPerUnit = plPerUnit($row["action"], $row["entryPrice"], $row["exitPrice"] );
-	$noOfUnits = noOfUnits($row["entryPrice"]);
-	$plPerLac = plPerLac($plPerUnit, $noOfUnits);
-	$grossROI = grossROI($plPerLac, $noOfUnits, $row["entryPrice"]);
-	$finalResult = finalResultIcon($grossROI);
-	/*	Prepare column data to display on front-end display */
+	$query = mysqli_query($conn, $sql) or die("all-single-call-type-grid-data.php: get all calls");
+	$totalFiltered = mysqli_num_rows($query); // when there is a search parameter then we have to modify total number filtered rows as per search result. 
+	$sql.=" ORDER BY ". $columns[$requestData['order'][0]['column']]."   ".$requestData['order'][0]['dir']."  LIMIT ".$requestData['start']." ,".$requestData['length']."   ";
+	/* $requestData['order'][0]['column'] contains colmun index, $requestData['order'][0]['dir'] contains order such as asc/desc  */	
+	$query=mysqli_query($conn, $sql) or die("all-single-call-type-grid-data.php: get all calls");
 
-	$nestedData[] = $row["stockName"];
-	$nestedData[] = $row["entryDate"];
-	$nestedData[] = $row["action"];
-	$nestedData[] = $row["entryPrice"];
-	$nestedData[] = $row["targetPrice"];
-	$nestedData[] = $row["stopLoss"];
-	$nestedData[] = $row["exitPrice"];
-	$nestedData[] = $plPerUnit;
-	$nestedData[] = $plPerLac;
-	$nestedData[] = $grossROI;
-	$nestedData[] = $finalResult;
-	
-	$data[] = $nestedData;
-}
+
+
+	$data = array();
+	while( $row=mysqli_fetch_array($query) ) {  // preparing an array
+		$nestedData=array(); 
+
+
+		/*	Prepare column data to display on front-end display */
+		$plPerUnit = plPerUnit($row["action"], $row["entryPrice"], $row["exitPrice"] );
+		$noOfUnits = noOfUnits($row["entryPrice"]);
+		$plPerLac = plPerLac($plPerUnit, $noOfUnits);
+		$grossROI = grossROI($plPerLac, $noOfUnits, $row["entryPrice"]);
+		$finalResult = finalResultIcon($grossROI);
+		/*	Prepare column data to display on front-end display */
+
+		$nestedData[] = $row["stockName"];
+		$nestedData[] = $row["entryDate"];
+		$nestedData[] = $row["action"];
+		$nestedData[] = $row["entryPrice"];
+		$nestedData[] = $row["targetPrice"];
+		$nestedData[] = $row["stopLoss"];
+		$nestedData[] = $row["exitPrice"];
+		$nestedData[] = $plPerUnit;
+		$nestedData[] = $plPerLac;
+		$nestedData[] = $grossROI;
+		$nestedData[] = $finalResult;
+		
+		$data[] = $nestedData;
+	}
 
 $json_data = array(
 			"draw"            => intval( $requestData['draw'] ),   // for every request/draw by clientside , they send a number as a parameter, when they recieve a response/data they first check the draw number, so we are sending same number in draw. 
@@ -153,3 +158,5 @@ $json_data = array(
 echo json_encode($json_data);  // send data as json format
 
 ?>
+
+
