@@ -96,11 +96,16 @@ class Report_Formulas {
 
 		protected function annualisedROI($netProfitLossTillYet, $totalInvestmentTillYet, $totalAverageTimePeriod) {
 			$secondNo =   ($totalInvestmentTillYet * $totalAverageTimePeriod) / 365;
-			$annualisedROI = ($netProfitLossTillYet / $secondNo)*100;
-			return number_format((float)$annualisedROI, 2, '.', ''). ' %';
+			if($secondNo > 0 ) {
+				$annualisedROI = ($netProfitLossTillYet / $secondNo)*100;
+				return number_format((float)$annualisedROI, 2, '.', ''). ' %';
+			}
+			else{
+				return 0;
+			}
 		}
 
-		protected function successPercentage($totalCallsgiven, $totalHits) {
+		protected function successPercentage($totalCallsgiven, $totalHits, $totalPendings) {
 			if($totalHits>0){
 				$successRate = ($totalHits/($totalCallsgiven - $totalPendings)) * 100;
 				return number_format($successRate, 1, '.', ''). ' %';
@@ -155,6 +160,13 @@ class All_Calls_Grid_Data extends Report_Formulas {
 	var $dbname = "wp_rmoney";
 	var $conn;
 	var $requestData;
+	var $totalInvestmentTillYet;
+	var $netProfitLossTillYet;
+	var $totalTimePeriod;
+	var $finalResult;
+	var $totalHits;
+	var $totalMisses;
+	var $totalPendings;
 
 	function __construct() {
 		/* Database connection start */
@@ -163,6 +175,7 @@ class All_Calls_Grid_Data extends Report_Formulas {
 
 		$this->fetch_data_from_db();
 	}
+
 
 	function fetch_data_from_db() {
 		global $requestData;
@@ -195,7 +208,7 @@ class All_Calls_Grid_Data extends Report_Formulas {
 			// getting total number records without any search
 			$sql = "SELECT * FROM wp_performance_report WHERE stockCat = '".$category."'";
 
-			$query = mysqli_query($this->conn, $sql) or die("all-single-call-type-grid-data.php: get all calls");
+			$query = mysqli_query($this->conn, $sql) or die("class-all-calls-grid-data.php: get all calls");
 			$totalData = mysqli_num_rows($query);
 			$totalFiltered = $totalData;  // when there is no search parameter then total number rows = total number filtered rows.
 
@@ -208,52 +221,115 @@ class All_Calls_Grid_Data extends Report_Formulas {
 			}
 
 
-			$query = mysqli_query($this->conn, $sql) or die("all-single-call-type-grid-data.php: get all calls");
+			$query = mysqli_query($this->conn, $sql) or die("class-all-calls-grid-data.php: get all calls");
 			$totalFiltered = mysqli_num_rows($query); // when there is a search parameter then we have to modify total number filtered rows as per search result. 
 			$sql.=" ORDER BY ". $columns[$requestData['order'][0]['column']]."   ".$requestData['order'][0]['dir']."  LIMIT ".$requestData['start']." ,".$requestData['length']."   ";
 			/* $requestData['order'][0]['column'] contains colmun index, $requestData['order'][0]['dir'] contains order such as asc/desc  */	
-			$query=mysqli_query($this->conn, $sql) or die("all-single-call-type-grid-data.php: get all calls");
+			$query=mysqli_query($this->conn, $sql) or die("class-all-calls-grid-data.php: get all calls");
 
 			$this->load_data_grid($query, $totalData, $totalFiltered);
 	}
 
 	function load_data_grid ($query, $totalData, $totalFiltered) {
 			global $requestData;
+			global $totalTimePeriod;
+			global $totalHits;
+			global $totalMisses;
+			global $totalPendings;
+
+			$totalCallsgivenTillYet = 0;
 
 
 			$data = array();
-			while( $row=mysqli_fetch_array($query) ) {  // preparing an array
-				$nestedData=array(); 
+			while( $row=mysqli_fetch_array($query) ) {  // preparing an array				
+				$singleCall=array(); 
+				$totalCallsgivenTillYet ++;
+
 
 
 				/*	Prepare column data to display on front-end display */
+				$timePeriod 	= $this->timePeriod($row["entryDate"], $row["exitDate"]);
 				$plPerUnit = $this->plPerUnit($row["action"], $row["entryPrice"], $row["exitPrice"] );
 				$noOfUnits = $this->noOfUnits($row["entryPrice"]);
 				$plPerLac = $this->plPerLac($plPerUnit, $noOfUnits);
 				$grossROI = $this->grossROI($plPerLac, $noOfUnits, $row["entryPrice"]);
-				$finalResult = $this->finalResultIcon($grossROI);
+				$finalResult 	= $this->finalResult($grossROI);
+				$finalResultIcon = $this->finalResultIcon($grossROI);
+				$totalInvestmentTillYet = $this->totalInvestmentTillYet($row["entryPrice"], $noOfUnits);
+				$netProfitLossTillYet = $this->netProfitLossTillYet($plPerLac);
+				//Sum all time periods
+				$totalTimePeriod += $timePeriod;
 				/*	Prepare column data to display on front-end display */
 
-				$nestedData[] = $row["stockName"];
-				$nestedData[] = $row["entryDate"];
-				$nestedData[] = $row["action"];
-				$nestedData[] = $row["entryPrice"];
-				$nestedData[] = $row["targetPrice"];
-				$nestedData[] = $row["stopLoss"];
-				$nestedData[] = $row["exitPrice"];
-				$nestedData[] = $plPerUnit;
-				$nestedData[] = $plPerLac;
-				$nestedData[] = $grossROI;
-				$nestedData[] = $finalResult;
+				$singleCall[] = $row["stockName"];
+				$singleCall[] = $row["entryDate"];
+				$singleCall[] = $row["action"];
+				$singleCall[] = $row["entryPrice"];
+				$singleCall[] = $row["targetPrice"];
+				$singleCall[] = $row["stopLoss"];
+				$singleCall[] = $row["exitPrice"];
+				$singleCall[] = $plPerUnit;
+				// $singleCall[] = $plPerLac;
+				// $singleCall[] = $grossROI;
+				// $singleCall[] = $finalResultIcon;				
 				
-				$data[] = $nestedData;
-			}
 
+
+				
+
+
+
+
+				if($finalResult == 'HIT') {
+					 $totalHits++;
+				}
+				elseif ($finalResult == 'MISS') {
+					$totalMisses++;
+				}
+				else{
+					if($totalPendings<=0){
+						return $totalPendings = 0;
+					}
+					$totalPendings++;
+				}
+
+				$successPercentage = $this->successPercentage($totalCallsgivenTillYet, $totalHits, $totalPendings);
+				// Calculate ROI on investment with total netprofitloss and totalInvestment
+				$roiOnInvestment = $this->roiOnInvestment($netProfitLossTillYet, $totalInvestmentTillYet);
+
+
+				$totalAverageTimePeriod =  $this->totalAverageTimePeriod($totalTimePeriod, $totalCallsgivenTillYet);
+
+
+				$annualisedROI = $this->annualisedROI($netProfitLossTillYet, $totalInvestmentTillYet, $totalAverageTimePeriod);
+
+				$singleCall[] = $totalAverageTimePeriod;
+
+				$singleCall[] = $netProfitLossTillYet;
+				$singleCall[] = $totalInvestmentTillYet;
+		
+
+				$summarisedSnapshot =	array(
+											'callsGiven'		=>	$totalCallsgivenTillYet,
+											'totalHits' 		=>	$totalHits,
+											'totalMisses' 		=>	$totalMisses,
+											'totalPendings' 	=>	$totalPendings,
+											'successPercentage' =>	$successPercentage,
+											'roiOnInvestment' 	=>	$roiOnInvestment,
+											'annualisedROI' 	=>	$annualisedROI
+										);	
+
+				
+				$data[] = $singleCall;
+			}
+			
+			/*$data = array('singleCall'=>$data,'summarisedSnapshot'=>$summarisedSnapshot);*/
 		$json_data = array(
 					"draw"            => intval( $requestData['draw'] ),   // for every request/draw by clientside , they send a number as a parameter, when they recieve a response/data they first check the draw number, so we are sending same number in draw. 
 					"recordsTotal"    => intval( $totalData ),  // total number of records
 					"recordsFiltered" => intval( $totalFiltered ), // total number of records after searching, if there is no searching then totalFiltered = totalData
-					"data"            => $data   // total data array
+					"data"            => $data,   // total data array
+					"summarisedSnapshot"	=> $summarisedSnapshot
 					);
 
 		echo json_encode($json_data);  // send data as json format

@@ -53,17 +53,17 @@ $sheetData = $report->fetch_records_from_excel($sheetname, $inputFileName);
 
 $dbRow = $report->fetch_records_from_db();
 
-//echo 'DB- <pre>';
-//print_r($dbRow);
-//echo '<pre>';
+// echo 'DB- <pre>';
+// print_r($dbRow);
+// echo '<pre>';
 
 /**********************************************************************************/
 
 $duplicateRecords = $report->get_duplicate_records_from_db($sheetData);
 
-//echo '<pre>';
-//print_r($duplicateRecords);
-//echo '<pre>';
+// echo 'duplicateRecords -<pre>';
+// print_r($duplicateRecords);
+// echo '<pre>';
 
 
 

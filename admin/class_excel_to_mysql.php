@@ -12,12 +12,30 @@ class Excel2Mysql extends Custom_Filter_For_Excel
 {
     //public $conn;
     private $excelSheetDataArray;
-    private $dbColumns = array('stockCat', 'stockID', 'stockName', 'action', 'entryDate', 'entryPrice', 'targetPrice', 'stopLoss', 'exitDate', 'exitPrice');
+    private $dbColumns = array('stockCat', 'stockID', 'stockName', 'action', 'futurePrice', 'strikePrice' ,'entryDate', 'entryPrice', 'targetPrice', 'stopLoss', 'exitDate', 'exitPrice');
     //private $postType = 'performance_report';
     private $table;
 
     function __construct() {
 
+    }
+
+    private function setParentCatInDb($stockCat){
+    	if($stockCat == 'Trading' || $stockCat == "Intraday" ) {
+    		return 'Equity';
+    	}
+    	elseif($stockCat == 'Future') {
+    		return 'Future';
+    	}
+    	elseif ($stockCat == 'Currency') {
+    		return 'Currency';
+    	}
+    	elseif ($stockCat == 'Option') {
+    		return 'Option';
+    	}
+    	else {
+    		die("Invalid Sub Category.");
+    	}
     }
 
     public function fetch_records_from_excel($sheetname, $inputFileName)
@@ -27,7 +45,7 @@ class Excel2Mysql extends Custom_Filter_For_Excel
 
 
         /**  Create an Instance of our Read Filter, passing in the cell range  **/
-        $filterSubset = new Custom_Filter_For_Excel(2,50,range('A','J'));
+        $filterSubset = new Custom_Filter_For_Excel(2,50,range('A','L'));
 
         $objReader = PHPExcel_IOFactory::createReader($inputFileType);
         $objReader->setLoadSheetsOnly($sheetname);
@@ -46,18 +64,48 @@ class Excel2Mysql extends Custom_Filter_For_Excel
              $i = 0;
             foreach ($excelSheetDataArray as $excelRow) {
                 //print_r($excelRow);
-                $excelSheetValues = array_values($excelRow);
-                //print_r($excelSheetValues);
+               
+                // echo '<pre>';
+                // echo $excelSheetValues[0];
+                // echo '</pre>';
 
                 if(!empty ($excelRow['A'])) {
-                    $excelKeysValues = array_combine($dbColumns, $excelSheetValues);
-                    //echo '<pre>';
-                    //print_r($excelKeysValues);
-                    //echo '</pre>';
-                    $excelRowSanitizedArray[$i] = $excelKeysValues;
+                	$excelSheetValues = array_values($excelRow);
+
+					// echo '<pre>--- dbColumns ---';
+					// print_r ($dbColumns);
+					// echo '</pre>';
+
+					// echo '<pre>--- excelSheetValues ---';
+					// print_r ($excelSheetValues);
+					// echo '</pre>';
+
+
+
+					// Set parent category based on stockcat field
+					$stockParentCat = $this->setParentCatInDb($excelSheetValues[0]);
+
+					// Convert 'parent category' into assoc array
+					$stockParentCat_assoc_A = array('stockParentCat' => $stockParentCat);
+
+					$excelSheetValues = array_combine($dbColumns, $excelSheetValues);     
+
+					// Add parent category value in the start
+					$excelSheetValues = array_merge($stockParentCat_assoc_A, $excelSheetValues);
+                 
+					// echo '<pre>--- excelSheetValues with parent category ---';
+					// print_r ($excelSheetValues);
+					// echo '</pre>';
+
+                    $excelRowSanitizedArray[$i] = $excelSheetValues;
+
                     $i++;
                 }
             }
+			// echo '<pre>--- excelRowSanitizedArray ---';
+			// print_r ($excelRowSanitizedArray);
+			// echo '</pre>';
+            
             return $excelRowSanitizedArray;
         }
     }
@@ -160,7 +208,7 @@ class Excel2Mysql extends Custom_Filter_For_Excel
 
 
 
-                        $insertNewRecord = $wpdb->insert($table, $excelrow, array('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' )  );
+ $insertNewRecord = $wpdb->insert($table, $excelrow, array('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' )  );
 
 
                             if (isset($insertNewRecord))

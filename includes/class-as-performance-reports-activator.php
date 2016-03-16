@@ -35,10 +35,13 @@ class As_Performance_Reports_Activator {
         $charset_collate = $wpdb->get_charset_collate();
         $createTable = "CREATE TABLE IF NOT EXISTS $table (
                 ID INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                stockParentCat VARCHAR(15) NOT NULL,
                 stockCat VARCHAR(25) NOT NULL,
                 stockID VARCHAR(25) NOT NULL,
                 stockName VARCHAR(50) NOT NULL,
                 action VARCHAR(12) NOT NULL,
+                futurePrice VARCHAR(12),
+                strikePrice VARCHAR(12), 
                 entryDate DATE NOT NULL,
                 exitDate DATE NOT NULL,
                 entryPrice VARCHAR(12) NOT NULL,

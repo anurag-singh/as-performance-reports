@@ -1,36 +1,3 @@
-(function( $ ) {
-	'use strict';
-
-	/**
-	 * All of the code for your public-facing JavaScript source
-	 * should reside in this file.
-	 *
-	 * Note: It has been assumed you will write jQuery code here, so the
-	 * $ function reference has been prepared for usage within the scope
-	 * of this function.
-	 *
-	 * This enables you to define handlers, for when the DOM is ready:
-	 *
-	 * $(function() {
-	 *
-	 * });
-	 *
-	 * When the window is loaded:
-	 *
-	 * $( window ).load(function() {
-	 *
-	 * });
-	 *
-	 * ...and/or other possibilities.
-	 *
-	 * Ideally, it is not considered best practise to attach more than a
-	 * single DOM-ready or window-load handler for a particular page.
-	 * Although scripts in the WordPress core, Plugins and Themes may be
-	 * practising this, we should strive to set a better example in our own work.
-	 */
-
-})( jQuery );
-
 $(document).ready(function($) {
 var dataTable = '';
 
@@ -47,7 +14,17 @@ var dataTable = '';
  
                 }
             }
-        } );
+
+        } ).on('xhr.dt', function ( e, settings, data, xhr ) {
+        //alert(data.summarisedSnapshot['callsGiven']);
+        $('.callsGiven').html(data.summarisedSnapshot['callsGiven']);
+        $('.totalHits').html(data.summarisedSnapshot['totalHits']);
+        $('.totalMisses').html(data.summarisedSnapshot['totalMisses']);
+        $('.totalPendings').html(data.summarisedSnapshot['totalPendings']);
+        $('.successPercentage').html(data.summarisedSnapshot['successPercentage']);
+        $('.roiOnInvestment').html(data.summarisedSnapshot['roiOnInvestment']);
+        $('.annualisedROI').html(data.summarisedSnapshot['annualisedROI']);
+    } );
 
 
 
@@ -69,7 +46,7 @@ var dataTable = '';
             "processing": true,
             "serverSide": true,
             "ajax":{
-                url :"../wp-content/plugins/as-performance-reports/public/all-single-call-type-grid-data.php", // json datasource
+                url :"../wp-content/plugins/as-performance-reports/public/class-all-calls-grid-data.php", // json datasource
                 type: "post",  // method  , by default get
                 data : {cat:category},
                 error: function(){  // error handling
@@ -79,7 +56,17 @@ var dataTable = '';
  
                 	}
            		 }
-       		 } );
+       		 } ).on('xhr.dt', function ( e, settings, data, xhr ) {
+			        //alert(data.summarisedSnapshot['callsGiven']);
+			        $('.callsGiven').html(data.summarisedSnapshot['callsGiven']);
+			        $('.totalHits').html(data.summarisedSnapshot['totalHits']);
+			        $('.totalMisses').html(data.summarisedSnapshot['totalMisses']);
+			        $('.totalPendings').html(data.summarisedSnapshot['totalPendings']);
+			        $('.successPercentage').html(data.summarisedSnapshot['successPercentage']);
+			        $('.roiOnInvestment').html(data.summarisedSnapshot['roiOnInvestment']);
+			        $('.annualisedROI').html(data.summarisedSnapshot['annualisedROI']);
+			    } );
+
 		}
 		return false;
 	});

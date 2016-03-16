@@ -125,7 +125,7 @@ class Last_Month_Report extends Report_Formulas {
 				$success = $this->successPercentage($totalCallsgivenTillYet, $totalHits);
     		}
 
-			$allCalltypes[] = 	[
+			$allCalltypes = 	array(
 							'action'				=> 	$action,
 							'entryPrice'			=> 	$entryPrice,
 							'exitPrice'				=> 	$exitPrice,
@@ -148,10 +148,10 @@ class Last_Month_Report extends Report_Formulas {
     						// 'totalHits'				=>	$totalHits,
     						// 'totalMisses'			=>	$totalMisses,
     						// 'totalPendings'			=> 	$totalPendings
-    					];
+    					);
     	}
 
-    	$singleCallTypes	= 	[
+    	$singleCallTypes	= 	array(
     								'callsGiven' 			=>	$totalCallsgivenTillYet,
     								'totalHits'				=>	$totalHits,
 		    						'totalMisses'			=>	$totalMisses,
@@ -163,13 +163,13 @@ class Last_Month_Report extends Report_Formulas {
 		    						'annualisedROI'			=>  $annualisedROI,
 		    						'success'				=> 	$success,
 		    						
-    							];
+    							);
 
     	
-    	$data =[
+    	$data = array(
     			'allCalltypes' 		=> 	$allCalltypes, 
     			'singleCallTypes' 	=> 	$singleCallTypes
-    			];
+    			);
 
     	return $data;
 

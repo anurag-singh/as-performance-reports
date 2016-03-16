@@ -37,7 +37,7 @@ class Single_Call_Type extends Report_Formulas {
 
     private function singleCalls($singleCall) {
 
-		$singleCalls = 	[
+		$singleCalls = 	array(
 								'stockName'			=>	$singleCall['stockName'],
 								'entryDate'			=>	$singleCall['entryDate'],
 								'action'			=>	$singleCall['action'],
@@ -49,7 +49,7 @@ class Single_Call_Type extends Report_Formulas {
 								'plPerLac'			=>	$singleCall['plPerLac'],
 								'grossROI'			=>	$singleCall['grossROI'],
 								'finalResultIcon'	=>	$singleCall['finalResultIcon'],
-							];
+							);
 
 			return $singleCalls;					
 
@@ -84,7 +84,7 @@ class Single_Call_Type extends Report_Formulas {
 			$totalTimePeriod += $timePeriod;
 			
 			// Prepare a array to store the additional columns
-			$extraColumns = [
+			$extraColumns = array(
 						'totalCallsgivenTillYet' => $totalCallsgivenTillYet,
 						'timePeriod'	=> $timePeriod,
 						'totalTimePeriod'=> $totalTimePeriod,
@@ -95,7 +95,7 @@ class Single_Call_Type extends Report_Formulas {
 						'finalResultIcon'	=>	$finalResultIcon,	
 						'totalInvestmentTillYet'=> $totalInvestmentTillYet,
 						'netProfitLossTillYet'	=> $netProfitLossTillYet,
-					];
+					);
 
 			// Mergre arrays and make a single one
 			$singleCall = array_merge($singleCall, $extraColumns);
@@ -133,7 +133,7 @@ class Single_Call_Type extends Report_Formulas {
 		$annualisedROI = $this->annualisedROI($netProfitLossTillYet, $totalInvestmentTillYet, $totalAverageTimePeriod);
 		
 
-		$summarisedSnapshot =	[
+		$summarisedSnapshot =	array(
 							'callsGiven'		=>	$totalCallsgivenTillYet,
 							'totalHits' 		=>	$totalHits,
 							'totalMisses' 		=>	$totalMisses,
@@ -141,15 +141,15 @@ class Single_Call_Type extends Report_Formulas {
 							'successPercentage' =>	$successPercentage,
 							'roiOnInvestment' 	=>	$roiOnInvestment,
 							'annualisedROI' 	=>	$annualisedROI
-						];	
+						);	
 
 		
 		
 
-		$singleCallTypeData = 	[
+		$singleCallTypeData = 	array(
 									'singleCalls' 			=>		$singleCalls,
 									'summarisedSnapshot' 	=>		$summarisedSnapshot
-								]; 
+								); 
 
 		$singleCalls = $singleCallTypeData['singleCalls'];
 		$summarisedSnapshot = $singleCallTypeData['summarisedSnapshot'];
