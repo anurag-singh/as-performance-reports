@@ -31,6 +31,14 @@ class As_Performance_Reports_Deactivator {
 	 */
 	public static function deactivate() {
 
+		$newPage = new New_page();
+
+		$newPage->delete_page();
+
+
+
+
+
 	}
 
 }

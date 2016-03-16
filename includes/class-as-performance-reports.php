@@ -180,6 +180,9 @@ class As_Performance_Reports {
         //require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-single-call-type.php';
 
 
+        require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-create-new-page.php';
+
+
 
 
         $this->loader = new As_Performance_Reports_Loader();

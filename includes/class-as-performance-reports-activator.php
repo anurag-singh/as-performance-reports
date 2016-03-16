@@ -57,6 +57,14 @@ class As_Performance_Reports_Activator {
             echo $wpdb->print_error();
         }
 
+
+        $newPage = new New_Page();
+        $newPage->insert_new_page();
+    }
+
+    private function create_db_table() 
+    {
+        
     }
 
 }
