@@ -13,6 +13,7 @@
 
 
 class Last_Month_Report extends Report_Formulas {
+	var $category;
 	var $totatROI;
 	var $netProfitLoss;
 	var $totalInvestment;
@@ -41,7 +42,19 @@ class Last_Month_Report extends Report_Formulas {
 		}
 
 		$this->callCatArray = $allCats;
+
 	}
+
+// 	public function get_list_of_all_call_types() {
+// 		return $this->callCatArray;
+// 	}
+
+
+// 	public function display_all_call_type(){
+// echo '<pre>';
+// print_r($this->callCatArray);
+// echo '</pre>';
+// 	}
 		
 
     public function get_all_calls() {
@@ -74,6 +87,7 @@ class Last_Month_Report extends Report_Formulas {
 
     		// For total calls of category given
     		if($stockCat == $category) {
+    			$stockCat = $this->category;
     			$totalCallsgivenTillYet ++;
 
 				//  For time period of each call
@@ -152,6 +166,7 @@ class Last_Month_Report extends Report_Formulas {
     	}
 
     	$singleCallTypes	= 	array(
+    								'category'				=> 	$category,
     								'callsGiven' 			=>	$totalCallsgivenTillYet,
     								'totalHits'				=>	$totalHits,
 		    						'totalMisses'			=>	$totalMisses,

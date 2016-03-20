@@ -1,4 +1,4 @@
-$(document).ready(function($) {
+jQuery(document).ready(function($) {
 var dataTable = '';
 
          dataTable = $('#all-single-type-calls-grid').DataTable( {

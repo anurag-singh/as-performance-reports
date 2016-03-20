@@ -269,9 +269,9 @@ class All_Calls_Grid_Data extends Report_Formulas {
 				$singleCall[] = $row["stopLoss"];
 				$singleCall[] = $row["exitPrice"];
 				$singleCall[] = $plPerUnit;
-				// $singleCall[] = $plPerLac;
-				// $singleCall[] = $grossROI;
-				// $singleCall[] = $finalResultIcon;				
+				$singleCall[] = $plPerLac;
+				$singleCall[] = $grossROI;
+				$singleCall[] = $finalResultIcon;				
 				
 
 
@@ -303,10 +303,10 @@ class All_Calls_Grid_Data extends Report_Formulas {
 
 				$annualisedROI = $this->annualisedROI($netProfitLossTillYet, $totalInvestmentTillYet, $totalAverageTimePeriod);
 
-				$singleCall[] = $totalAverageTimePeriod;
+				// $singleCall[] = $totalAverageTimePeriod;
 
-				$singleCall[] = $netProfitLossTillYet;
-				$singleCall[] = $totalInvestmentTillYet;
+				// $singleCall[] = $netProfitLossTillYet;
+				// $singleCall[] = $totalInvestmentTillYet;
 		
 
 				$summarisedSnapshot =	array(

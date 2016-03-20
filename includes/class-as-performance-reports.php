@@ -182,6 +182,8 @@ class As_Performance_Reports {
 
         require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-create-new-page.php';
 
+        require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-create-new-menu.php';
+
 
 
 
@@ -246,7 +248,7 @@ class As_Performance_Reports {
        	$this->loader->add_action( 'wp_ajax_my_action', $plugin_public,  'my_action_callback' );
        	$this->loader->add_action( 'wp_ajax_nopriv_my_action', $plugin_public, 'my_action_callback' );
 
-        //$this->loader->add_action( 'admin_enqueue_scripts', $plugin_public, 'my_enqueue' );
+        $this->loader->add_filter('template_include', $plugin_public, 'override_templates_for_cpt_gallery');
     }
 
     /**

@@ -60,6 +60,10 @@ class As_Performance_Reports_Activator {
 
         $newPage = new New_Page();
         $newPage->insert_new_page();
+
+        $newMenu = new New_Menu();
+        $newMenu->register_menu();
+
     }
 
     private function create_db_table() 

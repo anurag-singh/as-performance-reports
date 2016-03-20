@@ -30,8 +30,11 @@ class Excel2Mysql extends Custom_Filter_For_Excel
     	elseif ($stockCat == 'Currency') {
     		return 'Currency';
     	}
-    	elseif ($stockCat == 'Option') {
-    		return 'Option';
+    	elseif ($stockCat == 'Contract') {
+    		return 'Contract';
+    	}
+    	elseif ($stockCat == 'Options') {
+    		return 'Options';
     	}
     	else {
     		die("Invalid Sub Category.");

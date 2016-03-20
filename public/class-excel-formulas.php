@@ -123,9 +123,10 @@
 		}
 
 		protected function roiOnInvestment($netProfitLossTillYet, $totalInvestmentTillYet) {
-			// 
-			$this->roiOnInvestment = ($netProfitLossTillYet / $totalInvestmentTillYet)*100;
-			return number_format($this->roiOnInvestment, 2 , '.', ''). ' %';
+			if($totalInvestmentTillYet > 0 ) {
+				$this->roiOnInvestment = ($netProfitLossTillYet / $totalInvestmentTillYet)*100;
+				return number_format($this->roiOnInvestment, 2 , '.', ''). ' %';
+			}
 		}
 
 	

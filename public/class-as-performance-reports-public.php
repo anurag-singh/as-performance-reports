@@ -134,7 +134,22 @@ class As_Performance_Reports_Public {
 	}
 
     
-	        
+    /**
+     * Override wordpress default template
+     *
+     * @since    1.0.0
+     */
+    function override_templates_for_cpt_gallery( $template ){
+        // Check if its a plugin created page
+        if ( is_page('performance-report') ) {
+            $template = plugin_dir_path( __FILE__ ) .'/partials/page-performance-report.php';
+        }
+
+        if( is_page('equity-trading-calls')) {
+            $template = plugin_dir_path(__FILE__) . '/partials/page-performance-tracker-reports.php';
+        }
+        return $template;
+    }	        
 		
 }
 

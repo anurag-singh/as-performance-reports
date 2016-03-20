@@ -25,11 +25,7 @@ class New_Page {
 
 	}
 
-	public function set_custom_page_template() 
-	{
-		  
-	}
-
+	
 	public function delete_page()
 	{
 		$newpage = get_page_by_title( $this->pageTitle, 'OBJECT', $this->postType );
